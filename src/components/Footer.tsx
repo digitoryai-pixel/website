@@ -159,9 +159,16 @@ export default function Footer() {
       <div className="border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-md gradient-bg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">D</span>
-            </div>
+            <svg width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="11" height="11" fill="#ff5a10"/>
+              <rect x="12.5" width="11" height="11" fill="#ff5a10"/>
+              <rect x="25" width="11" height="11" fill="#ff5a10"/>
+              <rect y="12.5" width="11" height="11" fill="#ff5a10"/>
+              <rect x="25" y="12.5" width="11" height="11" fill="#ff5a10"/>
+              <rect y="25" width="11" height="11" fill="#ff5a10"/>
+              <rect x="12.5" y="25" width="11" height="11" fill="#ff5a10"/>
+              <rect x="25" y="25" width="11" height="11" fill="#ff5a10"/>
+            </svg>
             <span className="text-sm text-gray-500">
               &copy; {new Date().getFullYear()} Digitory Technologies Pvt. Ltd. All rights reserved.
             </span>

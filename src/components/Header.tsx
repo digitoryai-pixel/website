@@ -52,10 +52,17 @@ export default function Header() {
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-lg gradient-bg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">D</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">Digitory</span>
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="11" height="11" fill="#ff5a10"/>
+              <rect x="12.5" width="11" height="11" fill="#ff5a10"/>
+              <rect x="25" width="11" height="11" fill="#ff5a10"/>
+              <rect y="12.5" width="11" height="11" fill="#ff5a10"/>
+              <rect x="25" y="12.5" width="11" height="11" fill="#ff5a10"/>
+              <rect y="25" width="11" height="11" fill="#ff5a10"/>
+              <rect x="12.5" y="25" width="11" height="11" fill="#ff5a10"/>
+              <rect x="25" y="25" width="11" height="11" fill="#ff5a10"/>
+            </svg>
+            <span className="text-xl font-semibold text-gray-900">digitory</span>
           </Link>
 
           {/* Desktop Nav */}

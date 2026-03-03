@@ -46,7 +46,7 @@ const modules = [
     name: 'Point of Sale',
     desc: 'Lightning-fast billing with multi-format support. Handle dine-in, takeaway, delivery, and bar orders from a single interface.',
     href: '/products/point-of-sale',
-    color: 'bg-blue-50 text-blue-600',
+    color: 'bg-primary-50 text-primary-600',
   },
   {
     icon: Package,
@@ -641,7 +641,7 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 lg:py-28 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 text-white">
+      <section className="py-20 lg:py-28 bg-gradient-to-br from-primary-500 via-primary-700 to-accent-700 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl lg:text-4xl font-bold tracking-tight">
             Start running your restaurants smarter today

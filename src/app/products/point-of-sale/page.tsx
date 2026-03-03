@@ -22,7 +22,7 @@ export default function PointOfSalePage() {
   return (
     <ProductPageLayout
       icon={MonitorSmartphone}
-      iconColor="text-blue-600"
+      iconColor="text-primary-600"
       title="Point of Sale"
       headline="The fastest restaurant POS in India"
       subheadline="Sub-second billing for dine-in, takeaway, delivery, and bar orders. Works offline. GST-compliant. Built for speed at scale."
