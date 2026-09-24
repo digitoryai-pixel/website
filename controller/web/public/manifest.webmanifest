@@ -1,0 +1,9 @@
+{
+  "name": "Digitory Controller",
+  "short_name": "Controller",
+  "start_url": "/m",
+  "display": "standalone",
+  "background_color": "#223345",
+  "theme_color": "#223345",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

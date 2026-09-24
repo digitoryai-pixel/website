@@ -5,3 +5,4 @@ uploads/
 .env
 *.tsbuildinfo
 next-env.d.ts
+.seeded

@@ -326,6 +326,8 @@ async function main() {
       // Weekly replenishment.
       if (dow === 1) {
         for (const it of ITEMS) {
+          // Indiranagar's bar is restocked by the Deccan Spirits delivery this week instead.
+          if (code === 'IND' && it.category === 'SPIRITS_WINE' && d > addDays(D, -10)) continue;
           const daily = menuFor(code).reduce((s2, m) => s2 + m.base * o.factor * (m.recipe.find((r) => r[0] === it.sku)?.[1] ?? 0), 0);
           if (daily <= 0) continue;
           movements.push({ id: randomUUID(), outletId: outlets[code].id, itemId: I[it.sku].id, locationId: itemLoc(code, it.sku), type: 'GRN', qty: round2(daily * 7.2), unitCost: it.standardCost, at: atLocal(d, 11), businessDate: d, refType: 'seed' });

@@ -64,6 +64,8 @@ export async function receiverView(tx: Tx, user: User, poId: string) {
   return {
     poId: po.id,
     poNo: po.poNo,
+    outletId: po.outletId,
+    vendorId: po.vendorId,
     vendor: vendor.name,
     blind,
     lines: po.lines.map((l) => {

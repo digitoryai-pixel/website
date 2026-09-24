@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  /* Digitory brand kit */
+  --color-brand: #ff5a10;
+  --color-brand-50: #fff4ed;
+  --color-brand-100: #ffe6d5;
+  --color-brand-600: #e64a05;
+  --color-navy: #223345;
+  --color-navy-50: #f0f4f8;
+  --color-navy-100: #d9e2ec;
+  --color-navy-400: #627d98;
+  --color-navy-600: #334e68;
+
+  /* Severity: red critical, amber attention, grey pending */
+  --color-critical: #dc2626;
+  --color-critical-50: #fef2f2;
+  --color-attention: #d97706;
+  --color-attention-50: #fffbeb;
+  --color-pending: #94a3b8;
+  --color-ok: #15803d;
+  --color-ok-50: #f0fdf4;
+
+  --font-sans: 'Poppins', system-ui, -apple-system, sans-serif;
+}
+
+html, body { background: #f6f7f9; color: #1e293b; }
+body { font-feature-settings: "tnum" 1; }
+.num { font-variant-numeric: tabular-nums; }
+/* Component classes live in a layer so Tailwind utilities (w-auto, py-1…) can override them. */
+@layer components {
+.card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; }
+.btn { display: inline-flex; align-items: center; gap: .4rem; border-radius: 8px; padding: .5rem .9rem; font-size: .875rem; font-weight: 500; transition: background .15s, opacity .15s; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn-primary { background: var(--color-brand); color: white; }
+.btn-primary:hover:not(:disabled) { background: var(--color-brand-600); }
+.btn-ghost { background: white; border: 1px solid #d1d5db; color: #1f2937; }
+.btn-ghost:hover:not(:disabled) { background: #f9fafb; }
+.input { width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: .5rem .7rem; font-size: .875rem; background: white; }
+.input:focus { outline: 2px solid var(--color-brand); outline-offset: -1px; }
+.label { font-size: .75rem; color: #64748b; font-weight: 500; }
+table.grid-table { width: 100%; font-size: .8125rem; }
+table.grid-table th { text-align: left; font-weight: 500; color: #64748b; padding: .55rem .75rem; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
+table.grid-table td { padding: .55rem .75rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+table.grid-table td.r, table.grid-table th.r { text-align: right; }
+}

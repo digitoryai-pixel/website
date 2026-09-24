@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: digitory
+      POSTGRES_PASSWORD: digitory
+      POSTGRES_DB: controller
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+
+  api:
+    image: node:22
+    working_dir: /app
+    volumes: [./api:/app]
+    environment:
+      DATABASE_URL: postgresql://digitory:digitory@db:5432/controller
+      JWT_SECRET: change-me
+      POS_INGEST_KEY: dev-pos-key
+      CORS_ORIGIN: http://localhost:3100
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    command: sh -c "npm ci && npx prisma migrate deploy && (test -f .seeded || (npm run db:seed && touch .seeded)) && npm run dev"
+    ports: ["4000:4000"]
+    depends_on: [db]
+
+  web:
+    image: node:22
+    working_dir: /app
+    volumes: [./web:/app]
+    environment:
+      API_URL: http://api:4000
+    command: sh -c "npm ci && npm run dev"
+    ports: ["3100:3100"]
+    depends_on: [api]
+
+volumes:
+  pgdata:
