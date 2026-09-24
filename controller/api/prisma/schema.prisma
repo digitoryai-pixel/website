@@ -1,0 +1,926 @@
+// Digitory Controller — Phase 1 data model
+//
+// Conventions
+// - Quantities are stored in the item's base unit (ML, KG or PC).
+// - Money is stored in rupees (Float, rounded to 2 dp at write time).
+// - businessDate is the outlet trading day as "YYYY-MM-DD" (day close can run past midnight).
+// - Every write that touches stock, purchases or sales checks the period lock first.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────── Organisation & people ───────────────────────────────
+
+model Org {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+
+  outlets   Outlet[]
+  users     User[]
+  items     Item[]
+  vendors   Vendor[]
+  periods   Period[]
+}
+
+model Outlet {
+  id         String  @id @default(cuid())
+  orgId      String
+  org        Org     @relation(fields: [orgId], references: [id])
+  code       String
+  name       String
+  kind       OutletKind @default(RESTAURANT)
+  hasDraught Boolean @default(false)
+  city       String?
+
+  locations  Location[]
+  access     UserOutlet[]
+
+  @@unique([orgId, code])
+}
+
+enum OutletKind {
+  RESTAURANT
+  CENTRAL_KITCHEN
+}
+
+enum Role {
+  OWNER
+  FINANCE_HEAD
+  REGIONAL_CONTROLLER
+  OUTLET_MANAGER
+  DUTY_MANAGER
+  BAR_MANAGER
+  HEAD_CHEF
+  PURCHASE
+  STORE
+  RECEIVER
+  COUNTER
+  CASHIER
+  KITCHEN_STAFF
+  BAR_STAFF
+  STEWARD
+}
+
+model User {
+  id           String   @id @default(cuid())
+  orgId        String
+  org          Org      @relation(fields: [orgId], references: [id])
+  name         String
+  shortName    String   // "Ravi K"
+  email        String?  @unique
+  phone        String?  @unique
+  whatsapp     String?
+  passwordHash String?  // web login
+  pinHash      String?  // mobile login + handover signatures
+  role         Role
+  title        String?  // "Bar manager"
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  outlets      UserOutlet[]
+}
+
+model UserOutlet {
+  userId   String
+  outletId String
+  user     User   @relation(fields: [userId], references: [id])
+  outlet   Outlet @relation(fields: [outletId], references: [id])
+
+  @@id([userId, outletId])
+}
+
+// ─────────────────────────────── Catalogue ───────────────────────────────
+
+model Location {
+  id        String  @id @default(cuid())
+  outletId  String
+  outlet    Outlet  @relation(fields: [outletId], references: [id])
+  name      String  // "Main bar", "Walk-in chiller"
+  kind      LocationKind
+  sortOrder Int     @default(0)
+
+  itemLocations ItemLocation[]
+}
+
+enum LocationKind {
+  BAR
+  STORE
+  CHILLER
+  KITCHEN
+  TAPS
+}
+
+enum Category {
+  SPIRITS_WINE
+  DRAUGHT_BEER
+  BOTTLED_BEER
+  MEAT_SEAFOOD
+  DAIRY
+  PRODUCE
+  DRY_STORE
+  PACKAGING
+}
+
+enum BaseUnit {
+  ML
+  KG
+  PC
+}
+
+model Item {
+  id                  String   @id @default(cuid())
+  orgId               String
+  org                 Org      @relation(fields: [orgId], references: [id])
+  sku                 String
+  name                String
+  category            Category
+  baseUnit            BaseUnit
+  packSize            Float?   // e.g. 750 (ml per bottle)
+  countMode           CountMode @default(WEIGHT)
+  standardCost        Float    // ₹ per base unit (contract / standard rate)
+  sellingPricePerUnit Float?   // ₹ per base unit, liquor only (variance valued at selling price)
+  emptyWeightG        Float?   // empty bottle weight for open-bottle weighing (M4)
+  densityGPerMl       Float?   // liquid density used to convert grams to ml
+  isHighValue         Boolean  @default(false)
+  active              Boolean  @default(true)
+
+  locations           ItemLocation[]
+
+  @@unique([orgId, sku])
+}
+
+enum CountMode {
+  WEIGHT          // scale reading in kg
+  UNITS           // pieces / bottles
+  BOTTLE_AND_OPEN // sealed bottles + weighed open bottle
+}
+
+model ItemLocation {
+  id         String   @id @default(cuid())
+  itemId     String
+  locationId String
+  item       Item     @relation(fields: [itemId], references: [id])
+  location   Location @relation(fields: [locationId], references: [id])
+  shelf      String?  // "Shelf 1, back wall"
+  sortOrder  Int      @default(0) // physical order in the store, not alphabetical
+
+  @@unique([itemId, locationId])
+}
+
+model MenuItem {
+  id        String   @id @default(cuid())
+  orgId     String
+  name      String
+  kind      MenuKind
+  price     Float
+  station   String   // Tandoor, Main bar, Taps, Fry
+  recipes   Recipe[]
+}
+
+enum MenuKind {
+  FOOD
+  BEVERAGE
+  LIQUOR
+}
+
+model Recipe {
+  id         String       @id @default(cuid())
+  menuItemId String
+  menuItem   MenuItem     @relation(fields: [menuItemId], references: [id])
+  version    Int
+  active     Boolean      @default(true)
+  section    String?      // kitchen section that prepares it (tandoor)
+  lines      RecipeLine[]
+  createdAt  DateTime     @default(now())
+}
+
+model RecipeLine {
+  id       String @id @default(cuid())
+  recipeId String
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  itemId   String
+  qty      Float  // base units per portion
+}
+
+// ─────────────────────────────── Stock ledger ───────────────────────────────
+
+enum MovementType {
+  OPENING
+  GRN
+  SALE
+  WASTAGE
+  BREAKAGE
+  COMP
+  STAFF_MEAL
+  TRANSFER_OUT
+  TRANSFER_IN
+  ADJUSTMENT
+}
+
+// Theoretical stock at any instant = SUM(qty) of movements up to that instant.
+model StockMovement {
+  id           String       @id @default(cuid())
+  outletId     String
+  itemId       String
+  locationId   String?
+  type         MovementType
+  qty          Float        // signed, base units
+  unitCost     Float
+  at           DateTime
+  businessDate String
+  refType      String?
+  refId        String?
+  reasonCode   String?
+  approvedById String?
+  createdById  String?
+
+  @@index([outletId, itemId, at])
+  @@index([outletId, businessDate])
+}
+
+// Store issues to a kitchen section; actual usage = issued − returned (recipe variance source)
+model SectionIssue {
+  id           String @id @default(cuid())
+  outletId     String
+  section      String
+  itemId       String
+  businessDate String
+  qtyIssued    Float
+  qtyReturned  Float  @default(0)
+
+  @@index([outletId, businessDate])
+}
+
+// ─────────────────────────────── Counts (W2) ───────────────────────────────
+
+enum CountType {
+  SPOT
+  FULL
+  RECOUNT
+}
+
+enum CountTaskStatus {
+  ASSIGNED
+  IN_PROGRESS
+  SUBMITTED
+  CLOSED
+}
+
+model CountTask {
+  id           String          @id @default(cuid())
+  outletId     String
+  locationId   String
+  type         CountType
+  status       CountTaskStatus @default(ASSIGNED)
+  assigneeId   String
+  assignedById String?         // null = system; never equals assigneeId
+  parentTaskId String?         // recount → original task
+  dueAt        DateTime
+  startedAt    DateTime?
+  snapshotAt   DateTime?
+  submittedAt  DateTime?
+  periodMonth  String?         // set for month-end FULL counts
+  businessDate String
+  createdAt    DateTime        @default(now())
+
+  lines        CountLine[]
+
+  @@index([assigneeId, status])
+  @@index([outletId, businessDate])
+}
+
+enum CountLineStatus {
+  PENDING
+  COUNTED
+  AUTO_ACCEPTED
+  RECOUNT_REQUESTED
+  RECOUNT_MATCHED
+  WITHIN_TOLERANCE
+  NEEDS_APPROVAL
+  APPROVED
+  SENT_BACK
+}
+
+enum EntryMethod {
+  SCALE
+  TYPED
+  UNITS
+}
+
+model CountLine {
+  id              String          @id @default(cuid())
+  taskId          String
+  task            CountTask       @relation(fields: [taskId], references: [id])
+  itemId          String
+  locationId      String
+  sortOrder       Int
+  originalLineId  String?         // for recount lines
+  status          CountLineStatus @default(PENDING)
+
+  // what the counter entered (never shown system quantity)
+  countedQty      Float?
+  sealedUnits     Float?
+  openWeightG     Float?
+  scaleReadings   Json?           // [{kg, at, deviceId}]
+  entryMethod     EntryMethod?
+  typedFlag       Boolean         @default(false)
+  countedAt       DateTime?
+  countedById     String?
+
+  // system side, hidden from counters
+  systemQty       Float?
+  variance        Float?
+  varianceValue   Float?
+  exceptionId     String?
+  approvedById    String?
+  approvedAt      DateTime?
+  approvalReason  String?
+
+  @@index([taskId])
+}
+
+// ─────────────────────────────── POS & KDS (W6, S5, S7) ───────────────────────────────
+
+enum BillStatus {
+  OPEN
+  PAID
+  VOIDED
+}
+
+model Bill {
+  id           String     @id @default(cuid())
+  outletId     String
+  billNo       String
+  businessDate String
+  tableNo      String?
+  section      String?
+  stewardId    String?
+  openedAt     DateTime
+  paidAt       DateTime?
+  status       BillStatus
+  netAmount    Float
+  paymentMode  String?    // CASH, CARD, UPI, WALLET
+  items        BillItem[]
+
+  @@unique([outletId, billNo])
+  @@index([outletId, businessDate])
+}
+
+model BillItem {
+  id         String  @id @default(cuid())
+  billId     String
+  bill       Bill    @relation(fields: [billId], references: [id])
+  menuItemId String
+  qty        Float
+  amount     Float
+  kotItemId  String? @unique
+}
+
+model Kot {
+  id           String    @id @default(cuid())
+  outletId     String
+  kotNo        String
+  businessDate String
+  firedAt      DateTime
+  tableNo      String?
+  section      String?
+  stewardId    String?
+  station      String
+  items        KotItem[]
+
+  @@unique([outletId, kotNo])
+  @@index([outletId, businessDate])
+}
+
+enum KotDisposition {
+  PENDING
+  BILLED
+  VOIDED
+  STAFF_MEAL
+  NC
+  UNACCOUNTED
+}
+
+model KotItem {
+  id           String         @id @default(cuid())
+  kotId        String
+  kot          Kot            @relation(fields: [kotId], references: [id])
+  menuItemId   String
+  qty          Float
+  amount       Float
+  disposition  KotDisposition @default(PENDING)
+  voidReason   String?
+  ncReasonCode String?
+  ncApproverId String?
+  exceptionId  String?
+}
+
+enum GiveawayType {
+  DISCOUNT
+  COMP
+  VOID_BEFORE_KOT
+  VOID_AFTER_KOT
+  VOID_AFTER_PAYMENT
+  REFUND
+}
+
+model Giveaway {
+  id           String       @id @default(cuid())
+  outletId     String
+  businessDate String
+  at           DateTime
+  type         GiveawayType
+  billId       String?
+  billNo       String?
+  amount       Float
+  reasonCode   String
+  approverId   String
+  givenById    String?
+  paidMode     String?
+  refundMode   String?
+
+  @@index([outletId, businessDate])
+  @@index([approverId, businessDate])
+}
+
+// ─────────────────────────────── Cash (W4, M7) ───────────────────────────────
+
+enum ShiftStatus {
+  OPEN
+  COUNT_SUBMITTED
+  CLOSED_MATCHED
+  CLOSED_VARIANCE
+}
+
+model CashShift {
+  id                 String      @id @default(cuid())
+  outletId           String
+  till               String
+  cashierId          String
+  businessDate       String
+  shiftName          String      // morning / evening
+  openedAt           DateTime
+  floatExpected      Float
+  floatCounted       Float?      // blind
+  floatDenoms        Json?
+  closedAt           DateTime?
+  closeDenoms        Json?
+  closeCounted       Float?
+  expectedCash       Float?
+  variance           Float?
+  secondCounterId    String?
+  secondDenoms       Json?
+  secondCounted      Float?
+  handoverCashierAt  DateTime?
+  handoverManagerAt  DateTime?
+  status             ShiftStatus @default(OPEN)
+  exceptionId        String?
+
+  drawerOpens        DrawerOpen[]
+  cashTxns           CashTxn[]
+
+  @@index([cashierId, businessDate])
+}
+
+model DrawerOpen {
+  id       String    @id @default(cuid())
+  shiftId  String
+  shift    CashShift @relation(fields: [shiftId], references: [id])
+  at       DateTime
+  withSale Boolean
+  billNo   String?
+}
+
+model CashTxn {
+  id      String    @id @default(cuid())
+  shiftId String
+  shift   CashShift @relation(fields: [shiftId], references: [id])
+  kind    String    // SALE, REFUND, PAYOUT
+  amount  Float     // signed
+  at      DateTime
+  ref     String?
+}
+
+// ─────────────────────────────── Purchasing (W5, M9, S6) ───────────────────────────────
+
+model Vendor {
+  id     String @id @default(cuid())
+  orgId  String
+  org    Org    @relation(fields: [orgId], references: [id])
+  name   String
+  gstin  String?
+  phone  String?
+  rates  VendorRate[]
+}
+
+model VendorRate {
+  id        String   @id @default(cuid())
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id])
+  itemId    String
+  rate      Float
+  validFrom DateTime
+}
+
+enum PoStatus {
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  CLOSED
+}
+
+model PurchaseOrder {
+  id           String   @id @default(cuid())
+  outletId     String
+  vendorId     String
+  poNo         String   @unique
+  indentRef    String?
+  createdById  String
+  approvedById String?
+  approvedAt   DateTime?
+  status       PoStatus @default(PENDING_APPROVAL)
+  expectedAt   DateTime?
+  createdAt    DateTime @default(now())
+  lines        PoLine[]
+}
+
+model PoLine {
+  id     String        @id @default(cuid())
+  poId   String
+  po     PurchaseOrder @relation(fields: [poId], references: [id])
+  itemId String
+  qty    Float
+  rate   Float
+}
+
+model Grn {
+  id           String    @id @default(cuid())
+  outletId     String
+  vendorId     String
+  poId         String?
+  grnNo        String    @unique
+  receivedById String
+  receivedAt   DateTime
+  businessDate String
+  blind        Boolean
+  invoiceNo    String?
+  lines        GrnLine[]
+}
+
+model GrnLine {
+  id          String  @id @default(cuid())
+  grnId       String
+  grn         Grn     @relation(fields: [grnId], references: [id])
+  itemId      String
+  qty         Float
+  weighed     Boolean @default(false)
+  typedFlag   Boolean @default(false)
+}
+
+enum InvoiceStatus {
+  WAITING_GRN
+  MATCHED
+  ON_HOLD
+  NEEDS_APPROVAL
+  BLOCKED
+  RELEASED
+  PAID
+}
+
+model Invoice {
+  id              String        @id @default(cuid())
+  outletId        String
+  vendorId        String
+  invoiceNo       String
+  invoiceDate     String
+  poId            String?
+  grnId           String?
+  amount          Float
+  payable         Float?
+  difference      Float?
+  status          InvoiceStatus
+  checkResult     String?       // "Qty and rate differ", "No PO", "Duplicate invoice number"
+  matchLines      Json?
+  duplicateOfId   String?
+  enteredById     String
+  decidedById     String?
+  decisionReason  String?
+  decidedAt       DateTime?
+  exceptionId     String?
+  createdAt       DateTime      @default(now())
+  lines           InvoiceLine[]
+  debitNotes      DebitNote[]
+
+  @@index([vendorId, invoiceNo])
+}
+
+model InvoiceLine {
+  id        String  @id @default(cuid())
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+  itemId    String
+  qty       Float
+  rate      Float
+}
+
+model DebitNote {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id])
+  number      String   @unique
+  amount      Float
+  reason      String
+  createdById String
+  createdAt   DateTime @default(now())
+}
+
+// ─────────────────────────────── Wastage & transfers (W7, M8) ───────────────────────────────
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model WastageEntry {
+  id           String         @id @default(cuid())
+  outletId     String
+  locationId   String?
+  section      String?
+  itemId       String
+  qty          Float
+  value        Float
+  reasonCode   String
+  isBreakage   Boolean        @default(false)
+  entryMethod  EntryMethod
+  loggedById   String
+  loggedAt     DateTime
+  businessDate String
+  status       ApprovalStatus @default(PENDING)
+  routedToId   String
+  decidedById  String?
+  decidedAt    DateTime?
+  decisionNote String?
+
+  @@index([outletId, businessDate])
+}
+
+enum TransferStatus {
+  IN_TRANSIT
+  RECEIVED
+  RECEIVED_WITH_GAP
+}
+
+model Transfer {
+  id             String         @id @default(cuid())
+  number         String         @unique
+  fromOutletId   String
+  toOutletId     String
+  dispatchedById String
+  dispatchedAt   DateTime
+  dueBy          DateTime
+  receivedById   String?
+  receivedAt     DateTime?
+  status         TransferStatus @default(IN_TRANSIT)
+  overdueFlagged Boolean        @default(false)
+  exceptionId    String?
+  lines          TransferLine[]
+}
+
+model TransferLine {
+  id          String   @id @default(cuid())
+  transferId  String
+  transfer    Transfer @relation(fields: [transferId], references: [id])
+  itemId      String
+  qtySent     Float
+  qtyReceived Float?
+}
+
+// ─────────────────────────────── Draught (S4) ───────────────────────────────
+
+model DraughtDraw {
+  id           String @id @default(cuid())
+  outletId     String
+  itemId       String
+  tankNo       String
+  businessDate String
+  drawnMl      Float
+  source       String // FLOW_METER, TANK_LEVEL
+  standardYieldPct Float
+}
+
+// ─────────────────────────────── Exceptions (W1, W3, S1, S2, M12) ───────────────────────────────
+
+enum ExceptionType {
+  STOCK_VARIANCE
+  LIQUOR_VARIANCE
+  UNBILLED_KOT
+  FOOD_COST
+  BEVERAGE_COST
+  RATE_VARIANCE
+  THREE_WAY_MISMATCH
+  NO_PO_INVOICE
+  DUPLICATE_INVOICE
+  GIVEAWAY_PATTERN
+  VOID_AFTER_PAYMENT
+  REFUND_MODE_MISMATCH
+  CASH_VARIANCE
+  CASH_PATTERN
+  DRAWER_OPEN_PATTERN
+  WASTAGE_ABOVE_LIMIT
+  TRANSFER_GAP
+  TRANSFER_OVERDUE
+  COUNT_NOT_STARTED
+  DRAUGHT_YIELD
+}
+
+enum Severity {
+  CRITICAL
+  ATTENTION
+  PENDING
+}
+
+enum ExceptionStatus {
+  OPEN
+  AWAITING_DECISION // explanation submitted, above explainer's limit
+  RESOLVED
+}
+
+model Exception {
+  id               String          @id @default(cuid())
+  orgId            String
+  outletId         String?
+  outletIds        String[]        // e.g. both stores for a transfer gap
+  type             ExceptionType
+  severity         Severity
+  status           ExceptionStatus @default(OPEN)
+  title            String
+  summary          String
+  impact           Float           // ₹
+  businessDate     String
+  groupKey         String          // repeat patterns group here
+  occurrences      Int             @default(1)
+
+  assigneeId       String?
+  ownerLabel       String?         // "Both stores"
+  routedPastOutlet Boolean         @default(false)
+  involvedUserIds  String[]
+  escalationPath   String[]        // user ids, next in line first
+  escalationLevel  Int             @default(0)
+  dueAt            DateTime
+
+  drivers          Json?           // [{label, amount}]
+  detail           Json?           // type-specific panel data
+  suggestedChecks  Json?           // [{label, done, byId, at}]
+  sourceRefs       Json?           // [{type, id, label}]
+
+  explanation      Json?           // {reasonCode, note, byId, at, evidenceIds}
+  decisionById     String?
+
+  closedAt         DateTime?
+  closedById       String?
+  closeReasonCode  String?
+  closeNote        String?
+
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  events           ExceptionEvent[]
+
+  @@index([orgId, status])
+  @@index([groupKey])
+}
+
+model ExceptionEvent {
+  id          String    @id @default(cuid())
+  exceptionId String
+  exception   Exception @relation(fields: [exceptionId], references: [id])
+  at          DateTime  @default(now())
+  actorId     String?   // null = system
+  kind        String    // CREATED, ROUTED, ESCALATED, REASSIGNED, CHECK, EXPLAINED, ACCEPTED, REJECTED, CLOSED, REOCCURRED
+  payload     Json?
+}
+
+model ReasonCode {
+  id     String @id @default(cuid())
+  orgId  String
+  domain String // EXCEPTION_CLOSE, WASTAGE, KOT_EXPLAIN, STOCK_ADJ, INVOICE_ACCEPT, NC, REOPEN
+  code   String
+  label  String
+
+  @@unique([orgId, domain, code])
+}
+
+model Attachment {
+  id           String   @id @default(cuid())
+  orgId        String
+  kind         String   // PHOTO, SCALE_READING, DOCUMENT, CCTV_STILL
+  path         String
+  mime         String
+  sizeBytes    Int
+  entityType   String?
+  entityId     String?
+  meta         Json?
+  uploadedById String
+  createdAt    DateTime @default(now())
+
+  @@index([entityType, entityId])
+}
+
+// ─────────────────────────────── Controls (S10) ───────────────────────────────
+
+// outletId null = chain default; an outlet row overrides only the keys it sets.
+model ControlProfile {
+  id             String   @id @default(cuid())
+  orgId          String
+  outletId       String?
+  tolerances     Json     // {SPIRITS_WINE: {pct, rupees, frequency}, ...}
+  approvalLimits Json     // {DUTY_MANAGER: {discountPct, comps, wastage, stockAdj}, ...}
+  sla            Json     // {CRITICAL: {hours, escalateTo}, ...}
+  settings       Json     // {blindReceiving, wastagePhotoAbove, countPhotoAbove, cashTolerance, transferDueHours, rateTolerancePct, ...}
+  updatedAt      DateTime @updatedAt
+  updatedById    String?
+
+  @@unique([orgId, outletId])
+}
+
+// ─────────────────────────────── Day close & period (W1, W8) ───────────────────────────────
+
+model DayClose {
+  id           String   @id @default(cuid())
+  outletId     String
+  businessDate String
+  closedAt     DateTime
+  kpis         Json     // net sales, food cost %, theoretical, ...
+  exceptionsCreated Int
+
+  @@unique([outletId, businessDate])
+}
+
+enum PeriodStatus {
+  OPEN
+  LOCKED
+}
+
+model Period {
+  id          String       @id @default(cuid())
+  orgId       String
+  org         Org          @relation(fields: [orgId], references: [id])
+  month       String       // "2026-08"
+  status      PeriodStatus @default(OPEN)
+  lockedById  String?
+  lockedAt    DateTime?
+  history     Json         @default("[]") // [{action, byId, at, reason}]
+
+  @@unique([orgId, month])
+}
+
+// ─────────────────────────────── Messaging, assistant, audit ───────────────────────────────
+
+model Notification {
+  id          String    @id @default(cuid())
+  userId      String
+  channel     String    // PUSH, WHATSAPP, IN_APP
+  kind        String    // DAILY_FLASH, CRITICAL, ESCALATION, TASK, DECISION
+  title       String
+  body        String
+  exceptionId String?
+  status      String    @default("QUEUED") // QUEUED, SENT, FAILED, READ
+  providerRef String?
+  createdAt   DateTime  @default(now())
+  sentAt      DateTime?
+
+  @@index([userId, createdAt])
+}
+
+model AskLog {
+  id        String   @id @default(cuid())
+  userId    String
+  channel   String   // WEB, WHATSAPP
+  question  String
+  answer    String
+  citations Json?
+  table     Json?
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id       String   @id @default(cuid())
+  orgId    String
+  actorId  String?
+  action   String
+  entity   String
+  entityId String?
+  before   Json?
+  after    Json?
+  at       DateTime @default(now())
+
+  @@index([orgId, entity, at])
+}
