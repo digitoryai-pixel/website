@@ -33,6 +33,14 @@ npm run dev                     # proxies /api to API_URL (default http://localh
 
 Or run everything in containers: `docker compose -f controller/docker-compose.yml up`.
 
+### Host it (Render)
+`render.yaml` at the repo root is a Render Blueprint. It creates the Postgres database, the API and the web app in Singapore:
+1. Sign in at https://render.com with GitHub and give Render access to `digitoryai-pixel/website`.
+2. **New → Blueprint**, pick the repo and branch, then **Apply**. Optionally paste `ANTHROPIC_API_KEY` (Ask Controller) and the WhatsApp values when asked.
+3. After the first deploy (about 10 minutes), open the `controller-web` URL, e.g. `https://controller-web.onrender.com`; mobile is at `/m`.
+
+Demo data loads on the first start only. Plans in the blueprint: database basic-256mb, API and web starter (always on, so the scheduled jobs run). The demo accounts share the password `demo1234` and PIN `1234`, so replace them before real use.
+
 ### Demo logins
 | Where | Who | Login |
 |---|---|---|

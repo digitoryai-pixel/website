@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
-const API_URL = process.env.API_URL ?? 'http://localhost:4000';
+// API_HOSTPORT is the private host:port Render provides for the API service.
+const API_URL = process.env.API_URL ?? (process.env.API_HOSTPORT ? `http://${process.env.API_HOSTPORT}` : 'http://localhost:4000');
 
 module.exports = {
   reactStrictMode: true,

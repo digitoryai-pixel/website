@@ -153,6 +153,11 @@ const MANAGERS_BY_OUTLET: Record<string, string[]> = { IND: ['vikram', 'rohit'],
 const STEWARDS: Record<string, string[]> = { IND: ['indstew', 'manoj'], KOR: ['arjun', 'leela'], WHF: ['whfstew'], HSR: ['hsrstew'] };
 
 async function main() {
+  // --if-empty: used on hosted deploys so demo data is loaded once and never wipes real data.
+  if (process.argv.includes('--if-empty') && (await prisma.org.count()) > 0) {
+    console.log('Database already has data; skipping demo seed.');
+    return;
+  }
   console.log(`Seeding demo data. Report date (yesterday) = ${D}`);
   await wipe();
   const uploadDir = path.resolve(process.env.UPLOAD_DIR ?? './uploads');
