@@ -30,6 +30,7 @@ def L(slug, frag=""):
     f, p = ROUTES[slug]
     return (f if MODE in ("preview", "static") else p) + frag
 
+VER = ""
 def A(path):
     return ("assets/" if MODE in ("preview", "static") else "/assets/") + path
 
@@ -76,7 +77,7 @@ I = {
  "link": '<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',
 }
 def ic(name, cls=""):
-    return f'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"{(" class=%s" % cls) if cls else ""}>{I[name]}</svg>'
+    return f'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"{(" class=%s" % cls) if cls else ""}>{I[name]}</svg>'
 
 def icon_box(name, navy=False):
     return f'<span class="icon{" navy" if navy else ""}">{ic(name)}</span>'
@@ -215,9 +216,9 @@ def doc(slug, title, desc, body, ld=None, active=None):
 <link rel="icon" type="image/png" href="{A("favicon.png")}"><link rel="apple-touch-icon" href="{A("apple-touch-icon.png")}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap">
-<link rel="stylesheet" href="{A("site.css")}">
+<link rel="stylesheet" href="{A("site.css")}?v={VER}">
 <script type="application/ld+json">{ldj}</script>'''
-    inner = f'{nav(active or slug)}\n<main id="main">\n{body}\n</main>\n{footer()}\n<script src="{A("site.js")}" defer></script>\n<script src="{A("sim.js")}" defer></script>'
+    inner = f'{nav(active or slug)}\n<main id="main">\n{body}\n</main>\n{footer()}\n<script src="{A("site.js")}?v={VER}" defer></script>\n<script src="{A("sim.js")}?v={VER}" defer></script>'
     if MODE == "preview" and slug == "home":
         return f'{head}\n<meta name="viewport" content="width=device-width,initial-scale=1">\n{inner}\n'
     return f'<!doctype html>\n<html lang="en-IN">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n{head}\n</head>\n<body>\n{inner}\n</body>\n</html>\n'
