@@ -1,4 +1,5 @@
 from core import *
+from eco import eco_section
 from sim import sim_section
 
 # When each agent arrives (keep in sync with the build waves)
@@ -161,10 +162,7 @@ def ai_page():
 <section class="section bg-navy"><div class="wrap">
 <div class="head"><span class="eyebrow">Agents that work together</span><h2>A chatbot on a billing app can’t do this</h2><p class="lede">Because your POS, kitchen, stock, guests and accounts live in one Digitory, agents can pass work to each other across modules.</p></div>
 <div class="grid g3">{pl}</div></div></section>
-<section class="section"><div class="wrap split">
-<figure style="margin:0"><img src="{A("ai-ecosystem.webp")}" alt="Digitory AI ecosystem map: DigiTalk Copilot, AI POS, AI Inventory, AI Wallet, AI Event Management, AI CRM and Loyalty, AI Reservation and AI Feedback around one Digitory hub" width="1000" height="1279" loading="lazy" style="border-radius:20px;border:1px solid var(--line)"></figure>
-<div style="display:flex;flex-direction:column;gap:20px"><span class="eyebrow">The big picture</span><h2>Intelligence in every module, one assistant across them all</h2><p class="lede">Each Digitory module has its own AI skills. DigiTalk ties them together, so you can ask one question and get an answer that draws on sales, stock, guests and bookings at once.</p>
-<a class="link" href="{L("digitalk")}">Meet DigiTalk {ARROW}</a></div></div></section>
+{eco_section(link=False)}
 <section class="section"><div class="wrap"><div class="head"><span class="eyebrow">Safe by design</span><h2>You stay in charge</h2></div>
 <div class="grid g4">
 <div class="card">{icon_box("check")}<h3>Approve or ignore</h3><p class="muted">Proposals show the old and new value. Nothing changes until you tap approve.</p></div>

@@ -1,4 +1,5 @@
 from core import *
+from eco import eco_section
 from sim import venue_picker
 
 # ======================= HOME =======================
@@ -133,10 +134,7 @@ def platform():
     body += f'''<section class="section bg-soft" id="more"><div class="wrap">
 <div class="head"><span class="eyebrow">How it connects</span><h2>One order, five updates, zero re-typing</h2></div>{flow_html}</div></section>
 <section class="section"><div class="wrap"><div class="head"><span class="eyebrow">Modules</span><h2>Everything a busy venue runs on</h2><p class="lede">Start with billing and add modules as you grow. They all work together from day one.</p></div>{blocks}</div></section>
-<section class="section bg-soft"><div class="wrap split">
-<div style="display:flex;flex-direction:column;gap:22px"><span class="eyebrow">AI on every module</span><h2>Every module comes with its own AI agents</h2><p class="lede">Because every module shares the same data, Digitory’s AI agents can watch your whole business: stock, sales, guests and money. They prepare the work and wait for your approval.</p><a class="link" href="{L("ai")}">Meet the AI agents {ARROW}</a></div>
-<figure style="margin:0"><img src="{A("ai-ecosystem.webp")}" alt="Digitory AI ecosystem map with eight AI modules around one Digitory hub" width="1000" height="1279" loading="lazy" style="border-radius:20px;border:1px solid var(--line);max-height:620px;object-fit:contain;background:#F7F8FB;width:100%"></figure>
-</div></section>
+{eco_section("AI on every module", "Every module comes with its own AI", "Because every module shares the same data, Digitory’s AI can watch your whole business. Here are the eight AI modules and what each skill does for you.", "bg-soft")}
 <section class="section bg-navy"><div class="wrap split">
 <div style="display:flex;flex-direction:column;gap:22px"><span class="eyebrow">Reliable and secure</span><h2>Built to stay up on your busiest night</h2>
 <ul class="ticks"><li><span><b>Offline billing.</b> The POS keeps working without internet and syncs later.</span></li><li><span><b>Role-based access.</b> Cashiers, captains, managers and owners each see what they need.</span></li><li><span><b>Audit trail.</b> Every void, discount and price change is logged with who did it.</span></li><li><span><b>Cloud backups.</b> Your data is backed up and available from anywhere.</span></li></ul></div>
