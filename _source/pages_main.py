@@ -102,8 +102,8 @@ def home():
       '<div class="hw-chips"><span>POS</span><span>Kitchen</span><span>Inventory</span><span>Recipes</span><span>Guests</span><span>Reports</span></div>', "#platform", "See the platform"),
      ("spark", "AI agents watch it all", "Agents work every shift on that live data: low stock, unusual voids, rising food cost, regulars who stopped coming. They prepare the fix before you ask.",
       '<div class="hw-toast"><span class="hw-dot"></span><span><b>Stock agent</b>Chicken runs out by 8 PM. Draft order ready.</span></div>', "#experience", "Watch them at your venue"),
-     ("check", "You approve. Or we run it.", "Nothing changes without your one-tap OK on WhatsApp or the app. Want less on your plate? The Digitory team can manage your inventory and recipes for you.",
-      '<div class="hw-ok"><span class="hw-btn">Approve</span><span class="hw-or">or</span><span class="hw-btn ghost">Managed by Digitory</span></div>', "#managed", "See Managed Inventory"),
+     ("check", "You approve. It's done.", "Nothing changes without your one-tap OK on WhatsApp or the app. Approve, edit or skip, and every action can be undone.",
+      '<div class="hw-ok"><span class="hw-btn">Approve</span><span class="hw-btn ghost">Edit</span><span class="hw-btn ghost">Skip</span></div>', L("ai"), "Meet the AI agents"),
     ]
     hw = "".join(f'''<li class="hw-step"><span class="hw-n">{i+1}</span><div class="hw-ic">{ic(icn)}</div><h3>{t}</h3><p class="muted">{d}</p>{vis}<a class="link" href="{href}">{cta_t} {ARROW}</a></li>''' for i, (icn, t, d, vis, href, cta_t) in enumerate(steps))
     how = f'''<section class="section how"><div class="wrap">
@@ -115,13 +115,12 @@ def home():
       (how, "How it works", "how"),
       (platform, "The platform", "platform"),
       (sim_section(title="Watch the AI agents run a day at your venue"), "AI agents in action", "experience"),
-      (mi_band(), "Managed Inventory", "managed"),
       (sols, "Built for your venue", "venues"),
       (whys, "Why Digitory", "why"),
       (testi, "Customers", "customers"),
     ]
     story = "".join(chap(h, i+1, lbl, a) for i, (h, lbl, a) in enumerate(chapters))
-    short = ["How it works", "Platform", "AI agents", "Managed Inventory", "Your venue", "Why Digitory", "Customers"]
+    short = ["How it works", "Platform", "AI agents", "Your venue", "Why Digitory", "Customers"]
     stations = "".join(f'<li><a href="#{a}" data-stop="{i+1:02d}"><span class="rm-node"><b>{i+1:02d}</b></span><span class="rm-lbl">{short[i]}</span></a></li>' for i, (h, lbl, a) in enumerate(chapters))
     rail = f'''<nav class="routemap" aria-label="Jump to a section" data-routemap><div class="wrap rm-in">
 <span class="rm-now" aria-hidden="true"><span class="rm-k">You are here</span><b data-rm-now>Start</b></span>
