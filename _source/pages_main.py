@@ -126,7 +126,7 @@ def home():
     rail = f'''<nav class="routemap" aria-label="Jump to a section" data-routemap><div class="wrap rm-in">
 <span class="rm-now" aria-hidden="true"><span class="rm-k">You are here</span><b data-rm-now>Start</b></span>
 <div class="rm-scroll"><ol class="rm-track"><span class="rm-line" aria-hidden="true"><i data-rm-fill></i></span>{stations}</ol></div></div></nav>'''
-    body = hero + logos + rail + story + faq_html(HOME_FAQ) + cta()
+    body = rail + hero + logos + story + faq_html(HOME_FAQ) + cta()
     ld = [{"@type": "WebSite", "@id": DOMAIN + "/#website", "url": DOMAIN, "name": "Digitory", "publisher": {"@id": DOMAIN + "/#org"}, "inLanguage": "en-IN"},
           {"@type": "SoftwareApplication", "name": "Digitory", "applicationCategory": "BusinessApplication", "applicationSubCategory": "Restaurant POS and management software",
            "operatingSystem": "Web, Android, Windows", "publisher": {"@id": DOMAIN + "/#org"}, "offers": {"@type": "Offer", "priceCurrency": "INR", "url": url("demo")}},

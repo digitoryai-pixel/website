@@ -673,3 +673,4 @@ a.card:hover{border-color:#C9D2DC;transform:translateY(-2px);box-shadow:0 18px 3
 .rm-in{gap:12px}.rm-track{min-width:0;padding:0 8px}.rm-track a{gap:7px;padding:4px 9px 4px 4px}.rm-node{width:26px;height:26px}.rm-lbl{font-size:12.5px}
 @media (max-width:1200px){.rm-now{display:none}}
 .rm-now{display:none!important}.rm-track{justify-content:space-between}
+.routemap{border-top:0}
