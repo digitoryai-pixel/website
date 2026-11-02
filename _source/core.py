@@ -85,7 +85,7 @@ def icon_box(name, navy=False):
 ARROW = ic("arrow")
 
 # ---------- shared content ----------
-STATS = [("600<em>+</em>", "outlets run on Digitory"), ("10", "cities in India, plus 3 countries"),
+STATS = [("1,000<em>+</em>", "clients run on Digitory"), ("10", "cities in India, plus 3 countries"),
          ("₹1,000 Cr<em>+</em>", "billed through Digitory every year"), ("100K<em>+</em>", "guest check-ins every day")]
 CLIENTS = ["Toit", "BygBrewski", "Windmills", "Plan B", "Hard Rock Cafe"]
 

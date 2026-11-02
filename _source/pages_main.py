@@ -97,7 +97,7 @@ def home():
            "operatingSystem": "Web, Android, Windows", "publisher": {"@id": DOMAIN + "/#org"}, "offers": {"@type": "Offer", "priceCurrency": "INR", "url": url("demo")}},
           faq_ld(HOME_FAQ)]
     return doc("home", "Digitory | Restaurant POS & Management Software for India",
-               "Billing, kitchen display, inventory, CRM and reports in one system for restaurants, bars, breweries and cloud kitchens. Works offline. Trusted by 600+ outlets.",
+               "Billing, kitchen display, inventory, CRM and reports in one system for restaurants, bars, breweries and cloud kitchens. Works offline. Trusted by 1,000+ clients.",
                body, ld)
 
 # ======================= PLATFORM =======================

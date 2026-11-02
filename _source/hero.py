@@ -28,7 +28,7 @@ def home_hero():
   <div class="hx-copy">
     <span class="hx-pill"><span class="hx-dot"></span>Pioneering AI agents for restaurants in India</span>
     <h1 id="hx-h">Your restaurant, now with an <span class="hx-grad">AI assistant</span>.</h1>
-    <p class="hx-lede">AI agents watch your billing, kitchen, stock and guests around the clock. They catch problems before they cost you, do the legwork, and ask before they act. Built on the platform that already runs 600+ outlets.</p>
+    <p class="hx-lede">AI agents watch your billing, kitchen, stock and guests around the clock. They catch problems before they cost you, do the legwork, and ask before they act. Built on the platform trusted by 1,000+ clients.</p>
     <div class="actions"><a class="btn btn-primary btn-lg" href="{L("demo")}">Book a demo {ARROW}</a><a class="btn btn-ghost btn-lg" href="#experience">Watch the agents work</a></div>
     <div class="hx-venues"><span>See the agents at your…</span><div>{venues}</div></div>
   </div>
@@ -38,7 +38,7 @@ def home_hero():
   </div>
 </div>
 <div class="wrap hx-stats">
-  <div><b>600+</b><span>outlets run on Digitory</span></div><div><b>10 cities</b><span>in India, and 3 countries</span></div><div><b>₹1,000 Cr+</b><span>billed every year</span></div><div><b>24×7</b><span>AI watching, you in charge</span></div>
+  <div><b>1,000+</b><span>clients run on Digitory</span></div><div><b>10 cities</b><span>in India, and 3 countries</span></div><div><b>₹1,000 Cr+</b><span>billed every year</span></div><div><b>24×7</b><span>AI watching, you in charge</span></div>
 </div>
 </section>'''
 

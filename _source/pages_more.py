@@ -164,7 +164,7 @@ def about():
     body = f'''<section class="hero"><div class="wrap hero-grid">
 <div class="hero-copy"><nav class="crumbs" aria-label="Breadcrumb"><a href="{L("home")}">Home</a> / <span aria-current="page">About</span></nav>
 <span class="eyebrow">About Digitory</span><h1>Built with restaurants, from day one</h1>
-<p class="lede">Digitory started in Bengaluru with a simple idea: a restaurant should run on one system, not five. Today more than 600 outlets across 10 cities and 3 countries bill, cook, stock and serve on Digitory.</p></div>
+<p class="lede">Digitory started in Bengaluru with a simple idea: a restaurant should run on one system, not five. Today more than 1,000 clients across 10 cities and 3 countries bill, cook, stock and serve on Digitory.</p></div>
 <div style="display:flex;justify-content:center"><img src="{A("digo.webp")}" alt="DIGO, the Digitory mascot, waving hello" width="360" height="360" style="width:min(340px,80vw);filter:drop-shadow(0 30px 40px rgba(34,51,69,.25))"></div>
 </div></section>
 <section class="section bg-soft"><div class="wrap split">
@@ -180,7 +180,7 @@ def about():
 <div style="display:flex;flex-direction:column;gap:18px"><span class="eyebrow">Say hello to DIGO</span><h2>Our mascot, and your guide</h2><p class="lede">DIGO wears the Digitory mark on his chest and shows up wherever you need a hand: during onboarding, in our help guides and when something needs your attention.</p></div>
 </div></section>''' + cta("Want to see it for yourself?", "Book a walkthrough, or come and meet the team in Bengaluru.")
     return doc("about", "About Digitory | Restaurant Technology from Bengaluru",
-               "Digitory is a Bengaluru restaurant technology company running billing, kitchen, inventory and guest operations for 600+ outlets across 10 cities.", body,
+               "Digitory is a Bengaluru restaurant technology company running billing, kitchen, inventory and guest operations for 1,000+ clients across 10 cities.", body,
                [crumbs_ld([("Home", "home"), ("About", "about")])])
 
 # ======================= DEMO =======================
