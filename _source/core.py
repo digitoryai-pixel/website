@@ -87,7 +87,7 @@ ARROW = ic("arrow")
 
 # ---------- shared content ----------
 STATS = [("1,000<em>+</em>", "clients run on Digitory"), ("3", "countries, and 10+ cities"),
-         ("$100M<em>+</em>", "billed through Digitory every year"), ("100K<em>+</em>", "guest check-ins every day")]
+         ("₹1,000 Cr<em>+</em>", "billed through Digitory every year"), ("100K<em>+</em>", "guest check-ins every day")]
 CLIENTS = ["Toit", "BygBrewski", "Windmills", "Plan B", "Hard Rock Cafe"]
 
 SOLUTIONS = [

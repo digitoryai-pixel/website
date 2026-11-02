@@ -38,7 +38,7 @@ def home_hero():
   </div>
 </div>
 <div class="wrap hx-stats">
-  <div><b>1,000+</b><span>clients run on Digitory</span></div><div><b>3 countries</b><span>and 10+ cities</span></div><div><b>$100M+</b><span>billed every year</span></div><div><b>24×7</b><span>AI watching, you in charge</span></div>
+  <div><b>1,000+</b><span>clients run on Digitory</span></div><div><b>3 countries</b><span>and 10+ cities</span></div><div><b>₹1,000 Cr+</b><span>billed every year</span></div><div><b>24×7</b><span>AI watching, you in charge</span></div>
 </div>
 </section>'''
 
