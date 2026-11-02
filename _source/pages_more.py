@@ -142,14 +142,14 @@ def customers():
     names = "".join(f'<div class="card" style="align-items:center;justify-content:center;min-height:110px;font-size:20px;font-weight:600;color:#7A8899">{c}</div>' for c in CLIENTS + ["[Logo]", "[Logo]", "[Logo]"])
     story = lambda v: f'''<article class="card"><span class="placeholder">Case study to be written with the client</span><span class="eyebrow" style="font-size:12px">{v}</span><h3>[Headline result, e.g. “Cut bar variance in half in 90 days”]</h3>
 <p class="muted"><b style="color:var(--ink)">Before:</b> [the problem in one line]</p><p class="muted"><b style="color:var(--ink)">With Digitory:</b> [what changed]</p><p class="muted"><b style="color:var(--ink)">Result:</b> [measured outcome]</p></article>'''
-    body = page_hero([("Home", "home"), ("Customers", "customers")], "Customers", "Trusted by some of India’s busiest venues",
+    body = page_hero([("Home", "home"), ("Customers", "customers")], "Customers", "Trusted by busy venues in India and beyond",
         "Breweries, bars, cafés and restaurant groups run their nights on Digitory. Here are a few of them.", actions=False)
     body += f'''<section class="section bg-soft" id="more"><div class="wrap"><div class="grid g4">{names}</div></div></section>
 {stats_band()}
 <section class="section"><div class="wrap"><div class="head"><span class="eyebrow">Customer stories</span><h2>Results, in their words</h2></div>
 <div class="grid g3">{story("Brewery")}{story("Restaurant group")}{story("Café chain")}</div></div></section>''' + cta()
     return doc("customers", "Customers | Restaurants, Breweries & Bars on Digitory",
-               "See how breweries, bars, cafés and restaurant groups across India use Digitory to run faster service, tighter stock and clearer numbers.", body,
+               "See how breweries, bars, cafés and restaurant groups in India and beyond use Digitory to run faster service, tighter stock and clearer numbers.", body,
                [crumbs_ld([("Home", "home"), ("Customers", "customers")])])
 
 # ======================= ABOUT =======================

@@ -16,7 +16,7 @@ def home():
     from hero import home_hero
     hero = home_hero()
 
-    logos = '<section class="section tight" aria-label="Customers"><div class="wrap"><div class="logos"><span class="lbl">Trusted by some of India’s busiest venues</span>' + "".join(f"<span>{c}</span>" for c in CLIENTS) + '</div></div></section>'
+    logos = '<section class="section tight" aria-label="Customers"><div class="wrap"><div class="logos"><span class="lbl">Trusted by some of the busiest venues in hospitality</span>' + "".join(f"<span>{c}</span>" for c in CLIENTS) + '</div></div></section>'
 
     pa = [
      ("The kitchen never got the order.", "Every order lands in the right place", "Dine-in, QR, Swiggy and Zomato orders go to the right kitchen screen or printer the moment they are placed. Nothing is re-typed, nothing is lost on a slip of paper."),
@@ -74,13 +74,13 @@ def home():
 
     why = [
      ("wifi", "Keeps billing when the internet drops", "Orders, KOTs and bills carry on offline and sync when you’re back online. Friday night doesn’t depend on your broadband."),
-     ("rupee", "Made for Indian tax and trade", "GST and e-invoicing, bar excise registers, Tally export, UPI and card settlement, Swiggy and Zomato. Built in, not bolted on."),
+     ("globe", "Made for local tax and trade", "Taxes, currency and payment methods are set per outlet, so each location follows its own rules. In India that means GST, e-invoicing, bar excise, UPI, Swiggy and Zomato, built in."),
      ("layers", "One system, one login", "Billing, kitchen, stock, purchase, guests and reports share one menu and one set of numbers. No exports between apps."),
      ("hand", "People who know restaurants", "Our team sets up your menu, printers and staff, trains your crew, and stays a phone call away after launch."),
     ]
     why_html = "".join(f'<div class="card">{icon_box(i)}<h3>{t}</h3><p class="muted">{d}</p></div>' for i, t, d in why)
     whys = f'''<section class="section bg-soft"><div class="wrap">
-<div class="head"><span class="eyebrow">Why Digitory</span><h2>Built for Indian service, at Indian volumes</h2></div>
+<div class="head"><span class="eyebrow">Why Digitory</span><h2>Built for busy service, at any scale</h2></div>
 <div class="grid g4">{why_html}</div></div></section>'''
 
     quotes = "".join(f'''<figure class="quote"><span class="placeholder">Replace with an approved client quote</span><blockquote>“[What changed for this venue after moving to Digitory, in the owner’s own words.]”</blockquote><figcaption><span class="ph" aria-hidden="true"></span><span><b>[Name]</b>[Role], [Venue]</span></figcaption></figure>''' for _ in range(3))
@@ -126,11 +126,11 @@ def home():
 <span class="rm-now" aria-hidden="true"><span class="rm-k">You are here</span><b data-rm-now>Start</b></span>
 <div class="rm-scroll"><ol class="rm-track"><span class="rm-line" aria-hidden="true"><i data-rm-fill></i></span>{stations}</ol></div></div></nav>'''
     body = rail + hero + logos + story + faq_html(HOME_FAQ) + cta()
-    ld = [{"@type": "WebSite", "@id": DOMAIN + "/#website", "url": DOMAIN, "name": "Digitory", "publisher": {"@id": DOMAIN + "/#org"}, "inLanguage": "en-IN"},
+    ld = [{"@type": "WebSite", "@id": DOMAIN + "/#website", "url": DOMAIN, "name": "Digitory", "publisher": {"@id": DOMAIN + "/#org"}, "inLanguage": "en"},
           {"@type": "SoftwareApplication", "name": "Digitory", "applicationCategory": "BusinessApplication", "applicationSubCategory": "Restaurant POS and management software",
            "operatingSystem": "Web, Android, Windows", "publisher": {"@id": DOMAIN + "/#org"}, "offers": {"@type": "Offer", "priceCurrency": "INR", "url": url("demo")}},
           faq_ld(HOME_FAQ)]
-    return doc("home", "Digitory | Restaurant POS & Management Software for India",
+    return doc("home", "Digitory | AI-Powered Restaurant POS & Management Platform",
                "Billing, kitchen display, inventory, CRM and reports in one system for restaurants, bars, breweries and cloud kitchens. Works offline. Trusted by 1,000+ clients.",
                body, ld)
 
@@ -222,7 +222,7 @@ def pos():
     return module_page("pos", "POS and billing", "Restaurant POS and billing", "Restaurant POS that keeps up with your rush",
         "Fast billing, a kitchen that always knows what’s next, QR ordering and every delivery app in one queue. And it keeps working when the internet doesn’t.",
         "Restaurant POS & Billing Software | KDS, QR Ordering | Digitory",
-        "Fast restaurant billing software with kitchen display, QR ordering, Swiggy and Zomato integration, split bills and offline mode. Built for Indian restaurants and bars.", secs, faqs)
+        "Fast restaurant billing software with kitchen display, QR ordering, Swiggy and Zomato integration, split bills and offline mode. Built for busy restaurants and bars.", secs, faqs)
 
 def inventory():
     secs = [

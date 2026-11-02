@@ -51,6 +51,7 @@ I = {
  "spark": '<path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
  "wifi": '<path d="M2 8.5a15 15 0 0120 0M5.5 12a10 10 0 0113 0M9 15.5a5 5 0 016 0"/><circle cx="12" cy="19" r="1"/>',
  "rupee": '<path d="M6 4h12M6 9h12M6 4h3a5 5 0 010 10H6l8 6"/>',
+"globe": '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18z"/>',
  "layers": '<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/>',
  "hand": '<path d="M7 11V6a2 2 0 014 0v4M11 10V4a2 2 0 014 0v6M15 10V6a2 2 0 014 0v8a7 7 0 01-7 7h-1a7 7 0 01-6-3.4L3 14a2 2 0 013.3-2.2L7 13"/>',
  "qr": '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v7h-4M17 21h-3"/>',
@@ -85,8 +86,8 @@ def icon_box(name, navy=False):
 ARROW = ic("arrow")
 
 # ---------- shared content ----------
-STATS = [("1,000<em>+</em>", "clients run on Digitory"), ("10", "cities in India, plus 3 countries"),
-         ("₹1,000 Cr<em>+</em>", "billed through Digitory every year"), ("100K<em>+</em>", "guest check-ins every day")]
+STATS = [("1,000<em>+</em>", "clients run on Digitory"), ("3", "countries, and 10+ cities"),
+         ("$100M<em>+</em>", "billed through Digitory every year"), ("100K<em>+</em>", "guest check-ins every day")]
 CLIENTS = ["Toit", "BygBrewski", "Windmills", "Plan B", "Hard Rock Cafe"]
 
 SOLUTIONS = [
@@ -139,7 +140,7 @@ def footer():
   <div class="foot-grid">
     <div class="foot-brand">
       <img src="{A("lockup_white.png")}" alt="Digitory" width="114" height="32" loading="lazy">
-      <p>The restaurant operating system for India’s busiest kitchens, bars and cafés.</p>
+      <p>The AI-powered operating system for busy kitchens, bars and cafés.</p>
       <p class="small">Digitory Solutions Pvt. Ltd.<br>Bengaluru, India</p>
     </div>
     {col("Platform", [("POS and billing", L("pos")), ("Kitchen display", L("pos","#kds")), ("Inventory", L("inventory")), ("CRM and loyalty", L("guests")), ("Reservations", L("guests","#reservations")), ("AI agents", L("ai")), ("Managed Inventory", L("managed")), ("DigiTalk", L("digitalk"))])}
@@ -221,4 +222,4 @@ def doc(slug, title, desc, body, ld=None, active=None):
     inner = f'{nav(active or slug)}\n<main id="main">\n{body}\n</main>\n{footer()}\n<script src="{A("site.js")}?v={VER}" defer></script>\n<script src="{A("sim.js")}?v={VER}" defer></script>'
     if MODE == "preview" and slug == "home":
         return f'{head}\n<meta name="viewport" content="width=device-width,initial-scale=1">\n{inner}\n'
-    return f'<!doctype html>\n<html lang="en-IN">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n{head}\n</head>\n<body>\n{inner}\n</body>\n</html>\n'
+    return f'<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n{head}\n</head>\n<body>\n{inner}\n</body>\n</html>\n'
