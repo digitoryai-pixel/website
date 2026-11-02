@@ -614,3 +614,43 @@ a.card:hover{border-color:#C9D2DC;transform:translateY(-2px);box-shadow:0 18px 3
 .mi-k b{display:block;font-size:clamp(24px,2.6vw,32px);font-weight:700;letter-spacing:-.02em;color:var(--orange)}
 .mi-k span{font-size:14px;color:var(--muted)}
 .waves li p{margin:0;color:var(--muted);font-size:15px}
+/* ---- home story: chapters ---- */
+.eyebrow.chap::before{display:none}
+.eyebrow.chap b{display:inline-grid;place-items:center;min-width:30px;height:24px;padding:0 7px;border-radius:7px;background:var(--orange);color:#fff;font-size:12px;letter-spacing:.04em;margin-right:4px}
+.bg-navy .eyebrow.chap b{background:#FF8A4F;color:var(--navy,#223345)}
+.head.center{text-align:center;margin-left:auto;margin-right:auto}.head.center .lede{margin-left:auto;margin-right:auto}
+.how{background:linear-gradient(180deg,#fff, #FFF8F3)}
+.hw{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:56px;position:relative}
+.hw-step{position:relative;background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px 26px 26px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 50px -32px rgba(34,51,69,.35)}
+.hw-step+.hw-step::before{content:"";position:absolute;left:-46px;top:62px;width:36px;height:2px;background:repeating-linear-gradient(90deg,var(--orange) 0 6px,transparent 6px 11px)}
+.hw-step+.hw-step::after{content:"";position:absolute;left:-16px;top:57px;border:6px solid transparent;border-left:8px solid var(--orange)}
+.hw-n{position:absolute;top:-15px;left:26px;width:30px;height:30px;border-radius:50%;background:var(--orange);color:#fff;font-weight:700;display:grid;place-items:center;font-size:14px;box-shadow:0 0 0 5px #fff}
+.hw-ic{width:48px;height:48px;border-radius:14px;background:#FFF1E8;color:var(--orange);display:grid;place-items:center}
+.hw-ic svg{width:24px;height:24px}
+.hw-step h3{margin:4px 0 0}
+.hw-step .link{margin-top:auto}
+.hw-chips{display:flex;flex-wrap:wrap;gap:6px}
+.hw-chips span{font-size:12px;font-weight:600;padding:5px 10px;border-radius:99px;background:var(--bg-2);border:1px solid var(--line)}
+.hw-toast{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.45;background:var(--bg-2);border:1px solid var(--line);border-left:3px solid var(--orange);border-radius:12px;padding:10px 12px}
+.hw-toast b{display:block;font-size:12px}
+.hw-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);margin-top:5px;flex:none;animation:hwp 1.6s infinite}
+@keyframes hwp{0%{box-shadow:0 0 0 0 rgba(242,101,34,.5)}100%{box-shadow:0 0 0 9px rgba(242,101,34,0)}}
+.hw-ok{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hw-btn{font-size:12px;font-weight:700;padding:7px 12px;border-radius:9px;background:#12A150;color:#fff}
+.hw-btn.ghost{background:#fff;color:var(--ink,#223345);border:1px solid var(--line)}
+.hw-or{font-size:12px;color:var(--muted)}
+@media (max-width:900px){.hw{grid-template-columns:1fr;gap:40px}
+.hw-step+.hw-step::before{left:40px;top:-38px;width:2px;height:28px;background:repeating-linear-gradient(180deg,var(--orange) 0 6px,transparent 6px 11px)}
+.hw-step+.hw-step::after{left:35px;top:-12px;border:6px solid transparent;border-top:8px solid var(--orange)}}
+@media (prefers-reduced-motion:reduce){.hw-dot{animation:none}}
+/* chapter rail */
+.chap-rail{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:6px;opacity:0;pointer-events:none;transition:opacity .3s}
+.chap-rail.show{opacity:1;pointer-events:auto}
+.chap-rail a{display:flex;align-items:center;justify-content:flex-end;gap:10px;text-decoration:none;color:var(--ink,#223345);height:22px}
+.chap-rail i{order:2;width:10px;height:10px;border-radius:50%;border:2px solid #C9D1DA;background:#fff;transition:all .2s}
+.chap-rail span{font-size:12px;font-weight:600;background:#fff;border:1px solid var(--line);border-radius:99px;padding:3px 10px;box-shadow:0 6px 18px -8px rgba(34,51,69,.3);opacity:0;transform:translateX(6px);transition:all .2s;white-space:nowrap}
+.chap-rail span b{color:var(--orange);margin-right:6px}
+.chap-rail a.on i{background:var(--orange);border-color:var(--orange);transform:scale(1.25)}
+.chap-rail a.on span,.chap-rail a:hover span{opacity:1;transform:none}
+.chap-rail a:focus-visible{outline:2px solid var(--orange);outline-offset:3px;border-radius:99px}
+@media (max-width:1279px){.chap-rail{display:none}}

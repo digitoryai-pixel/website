@@ -91,7 +91,38 @@ def home():
 
     from sim import sim_section
     from managed import mi_band
-    body = hero + logos + sim_section() + problems + platform + mi_band() + spotlight + ai + sols + whys + stats_band() + testi + faq_html(HOME_FAQ) + cta()
+    import re as _re
+    def chap(html, n, label, anchor):
+        html = _re.sub(r'<span class="eyebrow">[^<]*</span>', f'<span class="eyebrow chap"><b>{n:02d}</b>{label}</span>', html, count=1)
+        html = _re.sub(r'<section class="([^"]*)"( id="[^"]*")?', lambda m: f'<section class="{m.group(1)}" id="{anchor}" data-chap="{n:02d}" data-chap-label="{label}"', html, count=1)
+        return html
+
+    steps = [
+     ("layers", "One platform", "Billing, kitchen, stock, purchase, guests and reports share one menu and one set of numbers. Every order updates everything it touches.",
+      '<div class="hw-chips"><span>POS</span><span>Kitchen</span><span>Inventory</span><span>Recipes</span><span>Guests</span><span>Reports</span></div>', "#platform", "See the platform"),
+     ("spark", "AI agents watch it all", "Agents work every shift on that live data: low stock, unusual voids, rising food cost, regulars who stopped coming. They prepare the fix before you ask.",
+      '<div class="hw-toast"><span class="hw-dot"></span><span><b>Stock agent</b>Chicken runs out by 8 PM. Draft order ready.</span></div>', "#experience", "Watch them at your venue"),
+     ("check", "You approve. Or we run it.", "Nothing changes without your one-tap OK on WhatsApp or the app. Want less on your plate? The Digitory team can manage your inventory and recipes for you.",
+      '<div class="hw-ok"><span class="hw-btn">Approve</span><span class="hw-or">or</span><span class="hw-btn ghost">Managed by Digitory</span></div>', "#managed", "See Managed Inventory"),
+    ]
+    hw = "".join(f'''<li class="hw-step"><span class="hw-n">{i+1}</span><div class="hw-ic">{ic(icn)}</div><h3>{t}</h3><p class="muted">{d}</p>{vis}<a class="link" href="{href}">{cta_t} {ARROW}</a></li>''' for i, (icn, t, d, vis, href, cta_t) in enumerate(steps))
+    how = f'''<section class="section how"><div class="wrap">
+<div class="head center"><span class="eyebrow">How Digitory works</span><h2>One platform. AI on top. You in charge.</h2>
+<p class="lede">Here is the whole idea in three steps. Each chapter below shows one of them in action.</p></div>
+<ol class="hw">{hw}</ol></div></section>'''
+
+    chapters = [
+      (how, "How it works", "how"),
+      (platform, "The platform", "platform"),
+      (sim_section(title="Watch the AI agents run a day at your venue"), "AI agents in action", "experience"),
+      (mi_band(), "Managed Inventory", "managed"),
+      (sols, "Built for your venue", "venues"),
+      (whys, "Why Digitory", "why"),
+      (testi, "Customers", "customers"),
+    ]
+    story = "".join(chap(h, i+1, lbl, a) for i, (h, lbl, a) in enumerate(chapters))
+    rail = '<nav class="chap-rail" aria-label="Page chapters" data-chap-rail>' + "".join(f'<a href="#{a}" data-rail="{i+1:02d}"><i></i><span><b>{i+1:02d}</b>{lbl}</span></a>' for i, (h, lbl, a) in enumerate(chapters)) + '</nav>'
+    body = hero + logos + story + faq_html(HOME_FAQ) + cta() + rail
     ld = [{"@type": "WebSite", "@id": DOMAIN + "/#website", "url": DOMAIN, "name": "Digitory", "publisher": {"@id": DOMAIN + "/#org"}, "inLanguage": "en-IN"},
           {"@type": "SoftwareApplication", "name": "Digitory", "applicationCategory": "BusinessApplication", "applicationSubCategory": "Restaurant POS and management software",
            "operatingSystem": "Web, Android, Windows", "publisher": {"@id": DOMAIN + "/#org"}, "offers": {"@type": "Offer", "priceCurrency": "INR", "url": url("demo")}},
