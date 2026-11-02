@@ -141,8 +141,8 @@ def ai_page():
 <div class="hero-copy"><nav class="crumbs" aria-label="Breadcrumb"><a href="{L("home")}">Home</a> / <span aria-current="page">AI agents</span></nav>
 <span class="eyebrow">The Digitory agentic platform</span><h1>An AI team for every part of your restaurant</h1>
 <p class="lede">Digitory’s AI agents are digital teammates. Each one looks after a single job, like reordering stock or catching unusual voids. It spots what needs doing, prepares the work and gets it done once you say yes.</p>
-<div class="actions"><a class="btn btn-primary" href="{L("demo")}">Book a demo {ARROW}</a><a class="btn btn-ghost" href="#agents">Meet the {COUNT} agents</a></div>
-<div class="hero-proof"><span>{COUNT} agents, 13 areas</span><span>You approve every change</span><span>Works on WhatsApp</span></div></div>
+<div class="actions"><a class="btn btn-primary" href="{L("demo")}">Book a demo {ARROW}</a><a class="btn btn-ghost" href="#agents">Meet the agents</a></div>
+<div class="hero-proof"><span>AI agents in 13 areas</span><span>You approve every change</span><span>Works on WhatsApp</span></div></div>
 <div>{inbox()}</div></div></section>
 <section class="section bg-soft"><div class="wrap">
 <div class="head"><span class="eyebrow">In 30 seconds</span><h2>What makes an agent different</h2><p class="lede">Most restaurant software waits for you to look at it. An agent comes to you.</p></div>
@@ -156,7 +156,7 @@ def ai_page():
 <img src="{A("digo.webp")}" alt="DIGO, the Digitory mascot" width="160" height="160" loading="lazy" style="width:150px"></div>
 <div>{day_html}</div></div></section>
 <section class="section" id="agents"><div class="wrap">
-<div class="head"><span class="eyebrow">Meet the agents</span><h2>{COUNT} agents across 13 areas of your business</h2><p class="lede">Each card shows what the agent does and how much it does on its own.</p>
+<div class="head"><span class="eyebrow">Meet the agents</span><h2>AI agents across 13 areas of your business</h2><p class="lede">Each card shows what the agent does and how much it does on its own.</p>
 <div class="chips">{lvl("Alert")}{lvl("Propose")}{lvl("Act")}{lvl("Answer")}</div></div>
 <div class="grid g3">{groups}</div></div></section>
 <section class="section bg-navy"><div class="wrap">
@@ -172,7 +172,7 @@ def ai_page():
 </div></div></section>''' + faq_html(AI_FAQ, "Questions about AI agents") + cta("See the AI team working on a menu like yours", "We’ll show you the agents that matter most for your venue, and how approvals work on WhatsApp.")
     ld = [crumbs_ld([("Home", "home"), ("AI agents", "ai")]), faq_ld(AI_FAQ)]
     return doc("ai", "AI Agents for Restaurants | Digitory Agentic Platform",
-               f"Meet Digitory’s {COUNT} AI agents for restaurants: reorder, shift watch, win-back, review replies, booking and more. They prepare the work; you approve it.", body, ld)
+               f"Meet Digitory’s AI agents for restaurants: reorder, shift watch, win-back, review replies, booking and more. They prepare the work; you approve it.", body, ld)
 
 AI_CSS = """
 /* AI agents */
