@@ -232,10 +232,10 @@
         { t: 'msg', who: 'ai', name: 'Delivery check', text: p.ing + ': 17.5 kg received but invoiced for 20 kg. Onions billed at ₹42/kg against an order price of ₹36.' },
         { t: 'ask', who: 'Delivery check', text: 'Send the claim of ₹1,270 to the vendors?', btn: 'Send claim', done: 'Claims sent with photos and the PO attached' }] }; },
 
-    mireview: function (p) { return { tab: 'Managed inventory', kicker: 'Every month', title: 'Experts who keep your food cost on target', agents: ['Your Digitory inventory manager', 'Variance and theft'],
-      text: 'Your Digitory inventory manager reconciles counts, chases gaps and reviews food cost with you every month.', outcome: 'Professional stock control without hiring a cost controller.',
+    mireview: function (p) { return { tab: 'Managed inventory', kicker: 'Every month', title: 'You count, we close the month', agents: ['Your inventory person', 'Digitory inventory team', 'Variance and theft'],
+      text: 'Your team does the counts on site. The Digitory team checks every entry, closes the month and reviews food cost with you on a monthly call.', outcome: 'Professional stock control without hiring a cost controller.',
       steps: [{ t: 'gauge', label: 'Stock variance after 3 months', from: 5.2, to: 1.9, unit: '%', better: true },
-        { t: 'msg', who: 'team', name: 'Your Digitory inventory manager', text: 'Monthly review for ' + p.outlet + ': food cost 30.4% (target 31%), variance 1.9%. 4 vendor claims raised, 12 recipes corrected.' },
+        { t: 'msg', who: 'team', name: 'Digitory inventory team', text: 'Month closed for ' + p.outlet + ' from your team’s full count. Food cost 30.4% against 29.6% by recipe; store stock within 0.8% of the books. Owners report sent.' },
         { t: 'card', title: 'Actions for next month', rows: [['Kitchen', 'Portion check on chicken dishes'], ['Purchasing', 'Switch onions to the second vendor'], ['Counts', 'Weekly count moves to Monday']] },
         { t: 'ask', who: 'Inventory manager', text: 'Book the review call for Monday at 11 AM?', btn: 'Book call', done: 'Booked · agenda shared on WhatsApp' }] }; },
 

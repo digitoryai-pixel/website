@@ -2,66 +2,106 @@ from core import *
 from sim import sim_section
 
 MI_FAQ = [
- ("What is Managed Inventory?", "A service where a Digitory inventory manager runs your stock control for you, using Digitory’s inventory module and AI agents. We set up recipes, reconcile counts, check deliveries and review food cost with you every month."),
- ("Do I still need a store manager?", "Your team still receives goods and does the physical counts. We plan the counts, reconcile them, chase the gaps and tell you what to fix. Most venues no longer need a separate cost controller."),
- ("Is it remote or on-site?", "Remote by default, through Digitory and WhatsApp, with scheduled on-site visits for counts and audits where you need them. [Confirm on-site cities and visit frequency.]"),
- ("Can I start with software only and add the service later?", "Yes. Many customers start with the inventory module and AI agents, then add Managed Inventory when they open more outlets."),
- ("How do I know it’s working?", "You get a monthly food cost report with variance by item and outlet, the actions taken, and a review call with your inventory manager."),
+ ("What is Managed Inventory?", "A service where Digitory runs your inventory and recipes in the system. Your team does the physical work on site: receiving, issuing, logging waste and counting. Our team sets up the masters and recipes, checks every entry each morning, closes the month and sends you an owners report."),
+ ("What does my team have to do?", "One inventory person, full time on site, receives goods, issues stock to the bar and kitchen, logs waste, comps and staff meals, and does the weekly and month-end counts, using simple checklists in the Digitory app. No inventory experience is needed; we train them."),
+ ("What do the owner, chef and bar manager do?", "The chef and bar manager share recipe cards once, about 2 hours a week in the first month. The owner approves order lists, decides only on what we flag, and joins a 30-minute review call each month."),
+ ("Is the Digitory team on site?", "We work remotely, through Digitory and WhatsApp, with visits when needed. All physical work, such as indents, issues and stock counts, is done by your team at the restaurant."),
+ ("How soon will I see results?", "Within 30 days your top-selling items have costed recipes, your opening stock is counted and the daily routine is running. Your first monthly owners report arrives on Day 5 of the next month."),
 ]
 
 def mi_band(compact=False):
     """Home and inventory-page band: platform plus people."""
-    pts = [("Recipes set up for you", "We build every recipe and sub-recipe from your menu, using Digitory’s ingredient database."),
-           ("Counts reconciled", "We plan your counts, reconcile them against sales and chase every gap."),
-           ("Deliveries and prices checked", "Short supply, wrong items and vendor price creep are caught and claimed."),
-           ("A monthly food cost review", "A clear report and a call with your inventory manager, with the actions to take.")]
+    pts = [("Your team does the physical work", "Receiving, issuing, waste and counts, with simple checklists in the Digitory app."),
+           ("We set up masters and recipes", "Items, vendors, units and costed recipes, linked to your POS."),
+           ("We check every entry, every morning", "Receipts, prices, stock and waste. Only what needs a decision reaches you."),
+           ("We close the month for you", "A monthly owners report on Day 5 and a review call with 3 actions.")]
     cards = "".join(f'<div class="mi-pt"><span class="mi-dot">{ic("check")}</span><div><b>{t}</b><p class="muted">{d}</p></div></div>' for t, d in pts)
     return f'''<section class="section mi-sec"><div class="wrap split">
 <div style="display:flex;flex-direction:column;gap:20px"><span class="eyebrow">Platform plus people</span>
-<h2>Managed Inventory: our experts run your stock with you</h2>
-<p class="lede">Software alone doesn’t fix food cost. With Managed Inventory, a Digitory inventory manager uses our AI agents to set up, check and improve your stock control, every week.</p>
+<h2>You run the floor. Digitory runs your inventory and recipes.</h2>
+<p class="lede">With Managed Inventory, your team does the physical work at the restaurant and our team sets up, checks and closes everything in the system, backed by our AI agents.</p>
 <div class="actions"><a class="btn btn-primary" href="{L("managed")}">How Managed Inventory works {ARROW}</a></div></div>
-<div class="mi-card"><div class="mi-head"><span class="av">{ic("users")}</span><div><b>Your Digitory inventory manager</b><span>Working with your store team, backed by AI agents</span></div></div>{cards}</div>
+<div class="mi-card"><div class="mi-head"><span class="av">{ic("users")}</span><div><b>Managed Inventory and Recipes</b><span>Your team on site, the Digitory team behind it</span></div></div>{cards}</div>
 </div></section>'''
 
+def _rows(items):
+    return "".join(f'<li><span>{t}</span></li>' for t in items)
+
 def managed_page():
-    steps = [("Week 1", "Set up", "We import your menu, build recipes and sub-recipes, set par levels and connect your vendors."),
-             ("Weeks 2–4", "Stabilise", "First full count, opening stock fixed, and the reorder and variance agents tuned to your venue."),
-             ("Every day", "Watch", "AI agents watch consumption, prices and deliveries. Your inventory manager follows up on anything unusual."),
-             ("Every week", "Count and reconcile", "We plan the count, reconcile it against sales and share the variance with your team."),
-             ("Every month", "Review", "A food cost report by item and outlet, and a review call with the actions for next month.")]
-    st = '<ol class="flow" style="padding:0;margin:0">' + "".join(f"<li><b>{b}</b><span class='small' style='color:var(--orange);font-weight:600'>{a}</span><br><span>{c}</span></li>" for a, b, c in steps) + "</ol>"
-    split = [("AI agents do", ["Deduct recipes from stock with every sale", "Draft purchase orders from par levels and forecast", "Flag variance, price rises and short deliveries", "Recalculate plate costs when prices change"]),
-             ("Your inventory manager does", ["Builds and corrects recipes with your chef", "Plans and reconciles counts with your store team", "Chases vendors on claims and price creep", "Reviews food cost with you and agrees actions"]),
-             ("Your team does", ["Receives goods against purchase orders", "Does the physical counts on the planned days", "Approves orders and changes with one tap", "Acts on the monthly review"])]
-    cols = "".join(f'<div class="card"><h3>{t}</h3><ul class="ticks">{"".join(f"<li><span>{x}</span></li>" for x in xs)}</ul></div>' for t, xs in split)
-    who = [("Single outlets without a cost controller", "Get professional stock control without hiring for it."),
-           ("Growing groups", "Keep food cost consistent as you open new outlets."),
-           ("Chains with a central kitchen", "Central purchasing, transfers and outlet-level variance, managed end to end."),
-           ("Bars and breweries", "Peg-level variance, bottle counts and excise registers kept in order.")]
-    who_html = "".join(f'<div class="card"><h3>{t}</h3><p class="muted">{d}</p></div>' for t, d in who)
+    roles = [("Your inventory person", "On site, full time", "#E5531A",
+              ["Receives goods and enters the GRN with a photo", "Issues stock to the bar and kitchen", "Logs waste, comps and staff meals", "Counts high-value items every week", "Does the full count on the last night of the month"],
+              "Simple checklists in the Digitory app. No experience needed; we train them."),
+             ("Owner, chef and bar manager", "Approve and guide", "#2563EB",
+              ["Share recipe cards once (chef and bar)", "Approve the weekly order list", "Decide only on what we flag", "Join a 30-minute review call each month"],
+              "About 2 hours a week from the chef and bar in month 1, then much less."),
+             ("Digitory team", "Remote, with visits", "#15803D",
+              ["Sets up item, vendor and unit masters", "Builds, costs and links recipes to the POS", "Checks every entry each morning and fixes errors", "Sends the weekly variance note and order list", "Closes the month and sends the owners report"],
+              "Backed by Digitory’s AI agents for alerts, variance and costing.")]
+    role_html = "".join(f'<div class="card mi-role" style="--c:{c}"><span class="mi-tag">{tag}</span><h3>{t}</h3><ul class="ticks">{_rows(xs)}</ul><p class="small muted">{note}</p></div>' for t, tag, c, xs, note in roles)
+
+    def lane(title, steps):
+        return f'<div class="mi-lane"><h3>{title}</h3><ol>' + "".join(f'<li><b>{a}</b><span>{b}</span><em class="{w}">{wl}</em></li>' for a, b, w, wl in steps) + '</ol></div>'
+    T, O, D = ("t", "Your team"), ("o", "Owner"), ("d", "Digitory")
+    day = [("Morning", "Receive goods, enter GRN and photo", *T), ("Through the day", "Issue stock to bar and kitchen", *T), ("Night close", "Log waste, comps and staff meals", *T), ("Next morning", "Check every entry: prices, negatives", *D), ("By 1 PM", "Fix errors and alert the owner, only if needed", *D)]
+    week = [("Monday", "Count spirits, kegs, meat and seafood", *T), ("Tuesday", "Variance note and order list", *D), ("Owner", "Approves the order", *O), ("Rest of week", "Recipe updates as the menu changes", *D)]
+    month = [("Last night", "Full count: store, bar and kitchen", *T), ("Day 3", "Digitory closes the month", *D), ("Day 5", "Owners report approved and sent", *D), ("Day 7", "Review call: 3 actions", *O)]
+    rhythm = lane("Every day", day) + lane("Every week", week) + lane("Every month", month)
+
+    checks = [("receipt", "Receipts", "Every delivery entered and matched to the invoice and order."), ("rupee", "Prices", "Any price up more than 5% from the last purchase."),
+              ("box", "Stock", "Negative or unusual stock, and issues without a request."), ("alert", "Waste", "Waste, comps and staff meals logged and reasonable."),
+              ("book", "Recipes", "New menu items without a recipe."), ("bell", "Alerts", "Only what needs a decision goes to the owner.")]
+    I.setdefault("alert", '<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.01"/>'); I.setdefault("book", '<path d="M4 4h12a4 4 0 014 4v12H8a4 4 0 01-4-4z"/>')
+    check_html = "".join(f'<div class="card">{icon_box(i)}<h3>{t}</h3><p class="muted">{d}</p></div>' for i, t, d in checks)
+
+    recipe = [("Recipe card", "Chef and bar manager", "Ingredients per portion"), ("Build and cost", "Digitory", "Yields and latest prices"), ("Link to POS", "Digitory", "Each sale draws stock"), ("Compare", "Monthly", "Actual against recipe")]
+    rec_html = '<ol class="flow" style="padding:0;margin:0">' + "".join(f"<li><b>{a}</b><span class='small' style='color:var(--orange);font-weight:600'>{b}</span><br><span>{c}</span></li>" for a, b, c in recipe) + "</ol>"
+
+    weeks = [("Week 1", "Item, vendor and unit masters · train your inventory person · work areas and par levels"),
+             ("Week 2", "Recipes for top items (80% of sales) · opening count in all areas"),
+             ("Week 3", "Daily routine live · daily Digitory checks begin · recipes for the full menu"),
+             ("Week 4", "Full menu costed · first month close and owners report")]
+    wk_html = '<ol class="waves">' + "".join(f'<li><b class="accent">{w}</b><p>{t}</p></li>' for w, t in weeks) + '</ol>'
+
+    gets = [("100%", "menu linked to recipes by day 30"), ("Exact", "food and drink cost, every month"), ("Within 1%", "store stock against the books"), ("Day 5", "owners report with 3 actions")]
+    needs = [("1 person", "full time, on site"), ("2 hrs/week", "chef and bar, in month 1"), ("Approvals", "orders, vendors and prices"), ("3 hrs", "month-end count night")]
+    kp = lambda xs: "".join(f'<div class="mi-k"><b>{a}</b><span>{b}</span></div>' for a, b in xs)
+
+    weekly = ["Variance on spirits, kegs, meat and seafood, in value", "Order list against par levels, for your approval", "Price increases over 5%, by vendor", "Waste, comps and staff meals, in value", "Open issues: missing entries, negative stock", "Menu items still without a recipe"]
+    monthly = ["Food and drink cost %, actual against recipe", "Full count variance by store, bar and kitchen", "Opening, purchases, consumption and closing stock", "Purchases by vendor, with price trends", "Top 10 variance items, with reasons", "Menu items below target margin", "3 actions for next month, agreed on the call"]
+
     body = f'''<section class="hero"><div class="wrap hero-grid">
 <div class="hero-copy"><nav class="crumbs" aria-label="Breadcrumb"><a href="{L("home")}">Home</a> / <a href="{L("platform")}">Platform</a> / <span aria-current="page">Managed Inventory</span></nav>
-<span class="eyebrow">Managed service</span><h1>Managed Inventory</h1>
-<p class="lede">Our inventory experts run your stock control with you, using Digitory and its AI agents. Recipes built, counts reconciled, deliveries checked and food cost reviewed every month, without hiring a cost controller.</p>
-<div class="actions"><a class="btn btn-primary" href="{L("demo")}">Talk to an inventory expert {ARROW}</a><a class="btn btn-ghost" href="#how">How it works</a></div>
-<div class="hero-proof"><span>Dedicated inventory manager</span><span>Monthly food cost review</span><span>Backed by AI agents</span></div></div>
-<div class="mi-card"><div class="mi-head"><span class="av">{ic("users")}</span><div><b>Monthly review · Koramangala</b><span>Example report</span></div></div>
-<div class="sim-row in"><span>Food cost</span><span>30.4% · target 31%</span></div>
-<div class="sim-row in good"><span>Stock variance</span><span>1.9% · target 2%</span></div>
-<div class="sim-row in bad"><span>Biggest gap</span><span>Chicken · 6.2 kg</span></div>
-<div class="sim-row in"><span>Vendor claims raised</span><span>4 · ₹3,820</span></div>
-<div class="sim-row in"><span>Recipes corrected</span><span>12</span></div>
-<p class="small muted" style="margin-top:10px">Next month: portion check on wings at the bar; switch onions to the second vendor.</p></div>
+<span class="eyebrow">Managed Inventory and Recipes</span><h1 style="font-size:clamp(36px,4.4vw,58px)">You run the floor. Digitory runs your inventory and recipes.</h1>
+<p class="lede">Your team does the physical work at the restaurant: receiving, issuing, logging waste and counting. Our team sets up, checks and closes everything in the system, so you get exact food and drink cost every month.</p>
+<div class="actions"><a class="btn btn-primary" href="{L("demo")}">Talk to an inventory expert {ARROW}</a><a class="btn btn-ghost" href="#who">Who does what</a></div>
+<div class="hero-proof"><span>Recipes linked in 30 days</span><span>Daily checks by Digitory</span><span>Owners report every month</span></div></div>
+<div class="mi-card"><div class="mi-head"><span class="av">{ic("users")}</span><div><b>Monthly owners report · Day 5</b><span>Example</span></div></div>
+<div class="sim-row in"><span>Food and drink cost</span><span>30.4% · recipe 29.6%</span></div>
+<div class="sim-row in good"><span>Store stock against books</span><span>within 0.8%</span></div>
+<div class="sim-row in bad"><span>Top variance item</span><span>Chicken · ₹6,200</span></div>
+<div class="sim-row in warn"><span>Items below target margin</span><span>4 dishes</span></div>
+<div class="sim-row in"><span>Price increases over 5%</span><span>3 vendors</span></div>
+<p class="small muted" style="margin-top:10px"><b style="color:var(--ink)">3 actions:</b> portion check on wings · switch onion vendor · re-price Paneer Tikka</p></div>
 </div></section>
-{sim_section("", "Watch Managed Inventory at work", "Our inventory manager and the AI agents, working together on a restaurant chain’s stock.", "", "managed")}
-<section class="section bg-soft" id="how"><div class="wrap"><div class="head"><span class="eyebrow">How it works</span><h2>From set-up to a steady monthly rhythm</h2></div>{st}</div></section>
-<section class="section"><div class="wrap"><div class="head"><span class="eyebrow">Who does what</span><h2>AI, experts and your team, each doing what they do best</h2></div><div class="grid g3">{cols}</div></div></section>
-<section class="section bg-soft"><div class="wrap"><div class="head"><span class="eyebrow">Who it’s for</span><h2>Built for venues that want food cost under control</h2></div><div class="grid g4">{who_html}</div></div></section>''' + faq_html(MI_FAQ, "About Managed Inventory") + cta("Let’s look at your food cost together", "Book a call with an inventory expert. We’ll review how you control stock today and show you what Managed Inventory would change.")
-    ld = [crumbs_ld([("Home", "home"), ("Platform", "platform"), ("Managed Inventory", "managed")]), faq_ld([(q, a) for q, a in MI_FAQ if "[" not in a]),
-          {"@type": "Service", "name": "Digitory Managed Inventory", "serviceType": "Restaurant inventory management service", "provider": {"@id": DOMAIN + "/#org"}, "areaServed": "IN"}]
-    return doc("managed", "Managed Inventory Service for Restaurants | Digitory",
-               "Digitory’s inventory experts run your restaurant stock control: recipe setup, count reconciliation, delivery and price checks, and a monthly food cost review.", body, ld, active="platform")
+<section class="section bg-soft" id="who"><div class="wrap"><div class="head"><span class="eyebrow">Who does what</span><h2>Physical work at the restaurant. Everything else, Digitory.</h2><p class="lede">Indents, issues and stock counts are done by your team on site. Digitory manages the system side: setup, checks, fixes and the month close.</p></div><div class="grid g3">{role_html}</div></div></section>
+<section class="section"><div class="wrap"><div class="head"><span class="eyebrow">The routine</span><h2>Every day, every week, every month</h2>
+<div class="chips"><span class="chip"><i class="mi-sw t"></i>Your team</span><span class="chip"><i class="mi-sw o"></i>Owner</span><span class="chip"><i class="mi-sw d"></i>Digitory</span></div></div>
+<div class="mi-lanes">{rhythm}</div></div></section>
+<section class="section bg-soft"><div class="wrap"><div class="head"><span class="eyebrow">Every morning</span><h2>What Digitory checks before lunch</h2></div><div class="grid g3">{check_html}</div></div></section>
+<section class="section"><div class="wrap"><div class="head"><span class="eyebrow">Recipe management</span><h2>Every dish costed, every sale counted</h2></div>{rec_html}
+<p class="note mt-24"><b>One rule:</b> no item goes on the POS menu without a recipe, and every price change is costed first.</p></div></section>
+{sim_section("", "Watch Managed Inventory at work", "Your team’s entries, Digitory’s checks and the AI agents, working together on a restaurant chain’s stock.", "bg-soft", "managed")}
+<section class="section"><div class="wrap"><div class="head"><span class="eyebrow">The first 30 days</span><h2>From set-up to your first owners report</h2></div>{wk_html}</div></section>
+<section class="section bg-soft"><div class="wrap split" style="align-items:start">
+<div><span class="eyebrow">What you get</span><div class="mi-kpis mt-16">{kp(gets)}</div></div>
+<div><span class="eyebrow">What we need from you</span><div class="mi-kpis mt-16">{kp(needs)}</div></div></div></section>
+<section class="section"><div class="wrap"><div class="head"><span class="eyebrow">Reports you receive</span><h2>Clear numbers, every week and every month</h2></div>
+<div class="grid g2"><div class="card"><h3>Weekly report</h3><p class="small muted">Every Tuesday, with the order list</p><ul class="ticks">{_rows(weekly)}</ul></div>
+<div class="card"><h3>Monthly owners report</h3><p class="small muted">Day 5, approved and sent; reviewed on the Day 7 call</p><ul class="ticks">{_rows(monthly)}</ul></div></div></div></section>''' + faq_html(MI_FAQ, "About Managed Inventory") + cta("Let’s look at your food cost together", "Book a call with an inventory expert. We’ll look at how you control stock today and show you what Managed Inventory would change.")
+    ld = [crumbs_ld([("Home", "home"), ("Platform", "platform"), ("Managed Inventory", "managed")]), faq_ld(MI_FAQ),
+          {"@type": "Service", "name": "Digitory Managed Inventory and Recipe Service", "serviceType": "Restaurant inventory and recipe management service", "provider": {"@id": DOMAIN + "/#org"}, "areaServed": "IN"}]
+    return doc("managed", "Managed Inventory and Recipe Service for Restaurants | Digitory",
+               "You run the floor, Digitory runs your inventory and recipes. Your team receives, issues and counts; Digitory sets up recipes, checks every entry daily, closes the month and sends an owners report.", body, ld, active="platform")
 
 MI_CSS = """
 /* Managed inventory */
@@ -77,4 +117,25 @@ MI_CSS = """
 .mi-dot{width:26px;height:26px;border-radius:8px;background:#E9F7F0;color:var(--ok);display:grid;place-items:center}
 .mi-dot svg{width:15px;height:15px}
 .mi-sec{background:linear-gradient(180deg,#fff,var(--bg-2))}
+"""
+
+MI2_CSS = """
+/* Managed inventory v2 */
+.mi-role{border-top:4px solid var(--c)}
+.mi-tag{align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--c);background:color-mix(in srgb,var(--c) 10%,#fff);border-radius:999px;padding:3px 10px}
+.mi-sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.mi-sw.t,.mi-lane em.t{background:#E5531A}.mi-sw.o,.mi-lane em.o{background:#2563EB}.mi-sw.d,.mi-lane em.d{background:#15803D}
+.mi-lanes{display:grid;gap:20px}
+.mi-lane{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px}
+.mi-lane h3{margin-bottom:14px}
+.mi-lane ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px;counter-reset:s}
+.mi-lane li{position:relative;background:var(--bg-2);border-radius:12px;padding:14px 14px 34px;display:flex;flex-direction:column;gap:4px}
+.mi-lane li b{font-size:13px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.mi-lane li span{font-size:15px;font-weight:500;line-height:1.4}
+.mi-lane em{position:absolute;left:14px;bottom:10px;font-style:normal;font-size:11.5px;font-weight:700;color:#fff;border-radius:999px;padding:2px 9px}
+.mi-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.mi-k{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
+.mi-k b{display:block;font-size:clamp(24px,2.6vw,32px);font-weight:700;letter-spacing:-.02em;color:var(--orange)}
+.mi-k span{font-size:14px;color:var(--muted)}
+.waves li p{margin:0;color:var(--muted);font-size:15px}
 """
