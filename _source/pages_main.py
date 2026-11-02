@@ -13,24 +13,10 @@ HOME_FAQ = [
 ]
 
 def home():
-    hero = f'''<section class="hero"><div class="wrap hero-grid">
-<div class="hero-copy">
-  <span class="eyebrow">Restaurant POS, inventory and guest platform</span>
-  <h1>Busy nights,<br><span class="accent">under control.</span></h1>
-  <p class="lede">Digitory is the restaurant platform that runs your billing, kitchen, stock and guests, with AI agents that do the legwork and experts who manage it with you. Built for Indian restaurants, bars and breweries.</p>
-  <div class="actions"><a class="btn btn-primary" href="{L("demo")}">Book a demo {ARROW}</a><a class="btn btn-ghost" href="{L("platform")}">Explore the platform</a></div>
-  <div class="hero-proof"><span>600+ outlets</span><span>Works offline</span><span>AI agents built in</span></div>
-  {venue_picker()}
-</div>
-<div class="shot">
-  <div class="frame"><div class="frame-bar"><i></i><i></i><i></i><span>app.digitory.com · POS dashboard</span></div>
-  <img src="{A("dashboard.webp")}" alt="Digitory POS dashboard showing total sales, orders, order status, top-selling items, stock levels, staff on shift and a 7-day sales trend" width="960" height="540" fetchpriority="high"></div>
-  <div class="float f2"><span class="dot" style="background:#E9F7F0;color:#11845B">{ic("check")}</span><span><b>Table 6 · Order ready</b>Sent to KDS at 14:28</span></div>
-  <div class="float f1"><span class="dot" style="background:#FFF1EA;color:#FF5A10">{ic("bell")}</span><span><b>Reorder agent</b>Paneer low · order drafted for you</span></div>
-</div>
-</div></section>'''
+    from hero import home_hero
+    hero = home_hero()
 
-    logos = '<section class="section tight" style="padding-top:0" aria-label="Customers"><div class="wrap"><div class="logos"><span class="lbl">Trusted by some of India’s busiest venues</span>' + "".join(f"<span>{c}</span>" for c in CLIENTS) + '</div></div></section>'
+    logos = '<section class="section tight" aria-label="Customers"><div class="wrap"><div class="logos"><span class="lbl">Trusted by some of India’s busiest venues</span>' + "".join(f"<span>{c}</span>" for c in CLIENTS) + '</div></div></section>'
 
     pa = [
      ("The kitchen never got the order.", "Every order lands in the right place", "Dine-in, QR, Swiggy and Zomato orders go to the right kitchen screen or printer the moment they are placed. Nothing is re-typed, nothing is lost on a slip of paper."),
