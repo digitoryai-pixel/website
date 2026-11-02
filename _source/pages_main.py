@@ -121,8 +121,12 @@ def home():
       (testi, "Customers", "customers"),
     ]
     story = "".join(chap(h, i+1, lbl, a) for i, (h, lbl, a) in enumerate(chapters))
-    rail = '<nav class="chap-rail" aria-label="Page chapters" data-chap-rail>' + "".join(f'<a href="#{a}" data-rail="{i+1:02d}"><i></i><span><b>{i+1:02d}</b>{lbl}</span></a>' for i, (h, lbl, a) in enumerate(chapters)) + '</nav>'
-    body = hero + logos + story + faq_html(HOME_FAQ) + cta() + rail
+    short = ["How it works", "Platform", "AI agents", "Managed Inventory", "Your venue", "Why Digitory", "Customers"]
+    stations = "".join(f'<li><a href="#{a}" data-stop="{i+1:02d}"><span class="rm-node"><b>{i+1:02d}</b></span><span class="rm-lbl">{short[i]}</span></a></li>' for i, (h, lbl, a) in enumerate(chapters))
+    rail = f'''<nav class="routemap" aria-label="Jump to a section" data-routemap><div class="wrap rm-in">
+<span class="rm-now" aria-hidden="true"><span class="rm-k">You are here</span><b data-rm-now>Start</b></span>
+<div class="rm-scroll"><ol class="rm-track"><span class="rm-line" aria-hidden="true"><i data-rm-fill></i></span>{stations}</ol></div></div></nav>'''
+    body = hero + logos + rail + story + faq_html(HOME_FAQ) + cta()
     ld = [{"@type": "WebSite", "@id": DOMAIN + "/#website", "url": DOMAIN, "name": "Digitory", "publisher": {"@id": DOMAIN + "/#org"}, "inLanguage": "en-IN"},
           {"@type": "SoftwareApplication", "name": "Digitory", "applicationCategory": "BusinessApplication", "applicationSubCategory": "Restaurant POS and management software",
            "operatingSystem": "Web, Android, Windows", "publisher": {"@id": DOMAIN + "/#org"}, "offers": {"@type": "Offer", "priceCurrency": "INR", "url": url("demo")}},
