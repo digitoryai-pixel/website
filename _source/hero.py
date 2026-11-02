@@ -27,7 +27,7 @@ def home_hero():
 <div class="wrap hx-grid">
   <div class="hx-copy">
     <span class="hx-pill"><span class="hx-dot"></span>Pioneering AI agents for restaurants in India</span>
-    <h1 id="hx-h">Your restaurant, now with an <span class="hx-grad">AI team</span>.</h1>
+    <h1 id="hx-h">Your restaurant, now with an <span class="hx-grad">AI assistant</span>.</h1>
     <p class="hx-lede">AI agents watch your billing, kitchen, stock and guests around the clock. They catch problems before they cost you, do the legwork, and ask before they act. Built on the platform that already runs 600+ outlets.</p>
     <div class="actions"><a class="btn btn-primary btn-lg" href="{L("demo")}">Book a demo {ARROW}</a><a class="btn btn-ghost btn-lg" href="#experience">Watch the agents work</a></div>
     <div class="hx-venues"><span>See the agents at your…</span><div>{venues}</div></div>
