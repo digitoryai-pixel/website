@@ -139,7 +139,7 @@ def ai_page():
     wv = "".join(f'<li><b class="accent">{a}</b><h3>{b}</h3><p class="muted">{c}</p></li>' for a, b, c in waves)
     body = f'''<section class="hero"><div class="wrap hero-grid">
 <div class="hero-copy"><nav class="crumbs" aria-label="Breadcrumb"><a href="{L("home")}">Home</a> / <span aria-current="page">AI agents</span></nav>
-<span class="eyebrow">The Digitory agentic platform</span><h1>An AI team for every part of your restaurant</h1>
+<span class="eyebrow">The Digitory agentic platform</span><h1>An AI assistant for every part of your restaurant</h1>
 <p class="lede">Digitory’s AI agents are digital teammates. Each one looks after a single job, like reordering stock or catching unusual voids. It spots what needs doing, prepares the work and gets it done once you say yes.</p>
 <div class="actions"><a class="btn btn-primary" href="{L("demo")}">Book a demo {ARROW}</a><a class="btn btn-ghost" href="#agents">Meet the agents</a></div>
 <div class="hero-proof"><span>AI agents in 13 areas</span><span>You approve every change</span><span>Works on WhatsApp</span></div></div>

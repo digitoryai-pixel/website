@@ -71,7 +71,7 @@ def managed_page():
 
     body = f'''<section class="hero"><div class="wrap hero-grid">
 <div class="hero-copy"><nav class="crumbs" aria-label="Breadcrumb"><a href="{L("home")}">Home</a> / <a href="{L("platform")}">Platform</a> / <span aria-current="page">Managed Inventory</span></nav>
-<span class="eyebrow">Managed Inventory and Recipes</span><h1 style="font-size:clamp(36px,4.4vw,58px)">You run the floor. Digitory runs your inventory and recipes.</h1>
+<span class="eyebrow">Managed Inventory and Recipes</span><h1>You run the floor. Digitory runs your inventory and recipes.</h1>
 <p class="lede">Your team does the physical work at the restaurant: receiving, issuing, logging waste and counting. Our team sets up, checks and closes everything in the system, so you get exact food and drink cost every month.</p>
 <div class="actions"><a class="btn btn-primary" href="{L("demo")}">Talk to an inventory expert {ARROW}</a><a class="btn btn-ghost" href="#who">Who does what</a></div>
 <div class="hero-proof"><span>Recipes linked in 30 days</span><span>Daily checks by Digitory</span><span>Owners report every month</span></div></div>

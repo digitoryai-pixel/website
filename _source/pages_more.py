@@ -194,8 +194,8 @@ def demo():
 <div style="display:flex;align-items:center;gap:16px;margin-top:8px"><img class="digo-inline" src="{A("digo.webp")}" alt="DIGO, the Digitory mascot" width="120" height="120"><p class="muted small">Prefer to talk now? Call <a href="tel:+917022511122"><b>+91 70225 11122</b></a> or write to <a href="mailto:info@digitory.com"><b>info@digitory.com</b></a>.</p></div>
 </div>
 <div class="card form-wrap" style="padding:clamp(24px,3vw,36px);box-shadow:0 30px 60px -30px rgba(34,51,69,.3)">
-<h2 style="font-size:24px;margin-bottom:8px">Request a demo</h2>
-<form class="form" data-demo action="/api/demo" method="post" novalidate>
+<h2 style="font-size:24px;margin-bottom:8px" data-form-title>Request a demo</h2>
+<form class="form" data-demo action="/api/demo" method="post" novalidate><input type="hidden" name="plan" value="">
 <div class="field"><label for="f-name">Your name</label><input id="f-name" name="name" autocomplete="name" required></div>
 <div class="field"><label for="f-phone">Mobile number</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required></div>
 <div class="field full"><label for="f-email">Work email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
@@ -215,7 +215,7 @@ def demo():
 def notfound():
     body = f'''<section class="section"><div class="wrap" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:20px">
 <img src="{A("digo.webp")}" alt="DIGO, the Digitory mascot" width="220" height="220">
-<span class="eyebrow">Error 404</span><h1 style="font-size:clamp(34px,5vw,56px)">This table isn’t on our floor plan</h1>
+<span class="eyebrow">Error 404</span><h1>This table isn’t on our floor plan</h1>
 <p class="lede">The page you’re looking for has moved or never existed. Let’s get you seated somewhere better.</p>
 <div class="actions" style="justify-content:center"><a class="btn btn-primary" href="{L("home")}">Go to the homepage</a><a class="btn btn-ghost" href="{L("demo")}">Book a demo</a></div></div></section>'''
     return doc("404", "Page not found | Digitory", "The page you are looking for could not be found.", body)

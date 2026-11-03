@@ -20,6 +20,7 @@ ROUTES = {
     "s-cloud": ("solutions-cloud-kitchens.html", "/solutions/cloud-kitchens"),
     "s-chains": ("solutions-chains.html", "/solutions/chains"),
     "s-events": ("solutions-clubs-events.html", "/solutions/clubs-events"),
+    "pricing": ("pricing.html", "/pricing"),
     "customers": ("customers.html", "/customers"),
     "about": ("about.html", "/about"),
     "demo": ("demo.html", "/demo"),
@@ -122,6 +123,7 @@ def nav(active):
     <li><details><summary>Platform {ic("chev")}</summary><div class="menu">{plat}</div></details></li>
     <li><details><summary>Solutions {ic("chev")}</summary><div class="menu">{sol}</div></details></li>
     <li>{a("ai","AI agents <span class=nav-new>New</span>")}</li>
+    <li>{a("pricing","Pricing")}</li>
     <li>{a("customers","Customers")}</li>
     <li>{a("about","About")}</li>
   </ul>
@@ -145,7 +147,7 @@ def footer():
     </div>
     {col("Platform", [("POS and billing", L("pos")), ("Kitchen display", L("pos","#kds")), ("Inventory", L("inventory")), ("CRM and loyalty", L("guests")), ("Reservations", L("guests","#reservations")), ("AI agents", L("ai")), ("Managed Inventory", L("managed")), ("DigiTalk", L("digitalk"))])}
     {col("Solutions", [(t, L(s)) for s, _, t, _ in SOLUTIONS])}
-    {col("Company", [("About us", L("about")), ("Customers", L("customers")), ("Blog", "/blog"), ("Careers", "/careers"), ("Book a demo", L("demo"))])}
+    {col("Company", [("About us", L("about")), ("Customers", L("customers")), ("Pricing", L("pricing")), ("Blog", "/blog"), ("Careers", "/careers"), ("Book a demo", L("demo"))])}
     <div><h4>Talk to us</h4><ul>
       <li><a href="tel:+917022511122">+91 70225 11122</a></li>
       <li><a href="mailto:info@digitory.com">info@digitory.com</a></li>

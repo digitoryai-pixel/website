@@ -4,8 +4,8 @@ OUT = sys.argv[1]; core.MODE = sys.argv[2]
 import hashlib
 core.VER = hashlib.md5(b''.join(open('assets/' + f, 'rb').read() for f in ['site.css', 'site.js', 'sim.js'])).hexdigest()[:8]
 import pages_main, pages_more, agents
-import managed
-P = {**pages_main.PAGES, **pages_more.PAGES, 'ai': agents.ai_page, 'managed': managed.managed_page}
+import managed, pricing
+P = {**pages_main.PAGES, **pages_more.PAGES, 'ai': agents.ai_page, 'managed': managed.managed_page, 'pricing': pricing.pricing_page}
 shutil.rmtree(OUT, ignore_errors=True); os.makedirs(OUT + "/assets")
 for f in ["site.css", "site.js", "dashboard.webp", "digo.webp", "lockup_navy.png", "lockup_white.png", "favicon.png", "apple-touch-icon.png", "og-image.jpg", "ai-ecosystem.webp", "sim.js"]:
     shutil.copy("assets/" + f, OUT + "/assets/" + f)
